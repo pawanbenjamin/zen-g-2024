@@ -11,21 +11,25 @@ export default function Accel() {
   });
   const [subscription, setSubscription] = useState(null);
 
+  const diff = [null, null];
+  let shakeCount = 0;
 
   function isShake({ x: newX, y: newY, z: newZ }) {
-    // console.log({ newX, newY, newZ });
+    diff[0] = diff[1];
+    diff[1] = newX;
+    let change;
 
-    // calc the absolute value
-    const diff = Math.abs(newX - x);
-    // if it meets our requirements to update coordinates
-    if (diff >= .5) {
-      console.log("shake");
-    } else console.log("not in my house");
-    // call setData with new coordinates
-    setData({ x: newX, y: newY, z: newZ })
+    if (diff[0] !== null) {
+      change = Math.abs(diff[1] - diff[0]);
+    }
+    if (change > 1) {
+      shakeCount++;
+      console.log("shakeCount:", shakeCount);
+    }
+    setData({ x: newX, y: newY, z: newZ });
   }
 
-  Accelerometer.setUpdateInterval(1000);
+  Accelerometer.setUpdateInterval(75);
 
   const _subscribe = () => {
     setSubscription(Accelerometer.addListener(isShake));
