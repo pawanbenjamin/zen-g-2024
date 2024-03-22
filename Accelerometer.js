@@ -11,21 +11,30 @@ export default function Accel() {
   });
   const [subscription, setSubscription] = useState(null);
 
-  const diff = [null, null];
+  let polls = [null, null];
+  let diffs = [];
   let shakeCount = 0;
 
   function isShake({ x: newX, y: newY, z: newZ }) {
-    diff[0] = diff[1];
-    diff[1] = newX;
+    if (diffs.length === 2) {
+      shakeCount++;
+      console.log({ shakeCount, polls, diffs });
+      polls = [null, null];
+      diffs = [];
+    }
+
+    if (newX < 0) polls[0] = newX;
+    if (newX >= 0) polls[1] = newX;
     let change;
 
-    if (diff[0] !== null) {
-      change = Math.abs(diff[1] - diff[0]);
+    if (polls[0] !== null && polls[1] !== null) {
+      change = Math.abs(polls[1] - polls[0]);
     }
-    if (change > 1) {
-      shakeCount++;
-      console.log("shakeCount:", shakeCount);
+    if (change > 1.5) {
+      diffs.push(change);
+      polls = [null, null];
     }
+
     setData({ x: newX, y: newY, z: newZ });
   }
 
