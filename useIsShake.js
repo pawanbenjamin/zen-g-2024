@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Accelerometer } from 'expo-sensors';
 
-export default function Accel(props) {
+export default function useIsShake() {
   const [{ x, y, z }, setData] = useState({
     x: 0,
     y: 0,
     z: 0,
   });
   const [subscription, setSubscription] = useState(null);
-  const { renderSVG, setRenderSVG } = props;
+  const [renderSVG, setRenderSVG] = useState(false);
 
   let polls = [null, null];
   let diffs = [];
@@ -59,41 +58,5 @@ export default function Accel(props) {
     return () => _unsubscribe();
   }, []);
 
-  // useEffect(() => {
-  //   // toggle css classes --->>>>>.
-  // }, [x, y, z])
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Accelerometer: (in gs where 1g = 9.81 m/s^2)</Text>
-      <Text style={styles.text}>x: {x}</Text>
-      <Text style={styles.text}>y: {y}</Text>
-      <Text style={styles.text}>z: {z}</Text>
-      <Text style={styles.text}>renderSVG: {renderSVG ? 'true' : 'false'}</Text>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
-  text: {
-    textAlign: 'center',
-  },
-  button: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#eee',
-    padding: 10,
-  },
-  middleButton: {
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderColor: '#ccc',
-  },
-});
-
+  return renderSVG;
+};
