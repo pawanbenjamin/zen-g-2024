@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import SvgComponent from "./LogoSvg";
 import Accel from './Accelerometer';
 import useIsShake from './useIsShake';
+import FadeIn from './Animations';
 
 export default function App() {
   // for use with Accelerometer.js component to pass through props (old approach)
@@ -11,9 +12,10 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <SvgComponent />
-      {/* following line used to pass props down to Accel component (old approach) */}
-      {/* {renderSVG ? <SvgComponent /> : <Accel renderSVG={renderSVG} setRenderSVG={setRenderSVG} />} */}
+      {/* {renderSVG ? <SvgComponent /> : <Text style={styles.text}>False</Text>} */}
+      <FadeIn style={styles.container}>
+        <SvgComponent />
+      </FadeIn>
     </View>
   )
 };
@@ -27,6 +29,6 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-    color: 'black'
+    color: 'white'
   }
 });
