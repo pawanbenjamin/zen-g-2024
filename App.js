@@ -8,7 +8,7 @@ import FadeIn from './Animations';
 export default function App() {
   // for use with Accelerometer.js component to pass through props (old approach)
   // const [renderSVG, setRenderSVG] = useState(false);
-  let renderSVG = useIsShake();
+  // let renderSVG = useIsShake();
 
   return (
     <View style={styles.container}>

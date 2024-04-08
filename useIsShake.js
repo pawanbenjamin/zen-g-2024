@@ -17,11 +17,13 @@ export default function useIsShake() {
   function isShake({ x: newX, y: newY, z: newZ }) {
     if (diffs.length === 2) {
       shakeCount++;
+      let newState;
       setRenderSVG((oldState) => {
-        console.log('inside setRenderSVG:', oldState);
+        console.log("oldState:", oldState);
+        newState = !oldState
         return !oldState;
       });
-      console.log({ shakeCount, diffs, renderSVG });
+      console.log({ shakeCount, diffs, newState });
       polls = [null, null];
       diffs = [];
     }
