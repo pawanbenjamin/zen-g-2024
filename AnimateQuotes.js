@@ -7,58 +7,37 @@ export default function AnimateQuotes(props) {
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const sizeAnim = useRef(new Animated.Value(0.5)).current;
-  // const size = sizeAnim.interpolate({
-  //   inputRange: [0, 1],
-  //   outputRange: ['50%', '100%'],
-  // });
 
   let shake = useIsShake();
 
-  // useEffect(() => {
-  //   Animated.timing(fadeAnim, {
-  //     toValue: 1,
-  //     duration: 1000,
-  //     useNativeDriver: true,
-  //   }).start();
-  // })
-
+  // lands on LogoSvg between quotes
   if (shake === true && registered === 0) {
     setRegistered(1);
-    // Animated.timing(fadeAnim, {
-    //   toValue: 1,
-    //   duration: 5000,
-    //   useNativeDriver: true,
-    // }).start();
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 5000,
-        delay: 1500,
+        duration: 2500,
+        delay: 1000,
         useNativeDriver: true,
       }),
       Animated.timing(sizeAnim, {
         toValue: 1,
-        duration: 5000,
-        delay: 1500,
+        duration: 2500,
+        delay: 1000,
         useNativeDriver: true,
       })
     ]).start();
   } else if (shake === false && registered === 1) {
     setRegistered(0);
-    // Animated.timing(fadeAnim, {
-    //   toValue: 0,
-    //   duration: 5000,
-    //   useNativeDriver: true,
-    // }).start();
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 5000,
+        duration: 3000,
         useNativeDriver: true,
       }),
       Animated.timing(sizeAnim, {
         toValue: 0.5,
-        duration: 5000,
+        duration: 3000,
         useNativeDriver: true,
       })
     ]).start();
@@ -72,7 +51,6 @@ export default function AnimateQuotes(props) {
       position: 'absolute',
       left: '6%',
       top: '45%',
-      // bottom: '100%',
       height: '100%',
       width: '100%',
     }}>

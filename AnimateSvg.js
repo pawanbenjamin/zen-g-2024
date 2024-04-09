@@ -3,8 +3,6 @@ import { Animated, Text, View } from 'react-native';
 import useIsShake from './useIsShake';
 // import SvgComponent from "./LogoSvg";
 
-// const AnimatedSvgComponent = Animated.createAnimatedComponent(SvgComponent);
-
 export default function AnimateSvg(props) {
   const [registered, setRegistered] = useState(0);
 
@@ -17,36 +15,34 @@ export default function AnimateSvg(props) {
   const sizeAnim = useRef(new Animated.Value(1)).current;
 
   let shake = useIsShake();
-  // console.log({ shake, registered });
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 5000,
+      duration: 3000,
       useNativeDriver: true,
     }).start();
   }, []);
 
+  // lands on LogoSvg between quotes
   if (shake === true && registered === 0) {
-    // console.log("shake true before fadeOut");
     setRegistered((oldState) => {
-      // console.log("old registered:", oldState);
       return 1;
     });
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 5000,
+        duration: 3500,
         useNativeDriver: true,
       }),
       Animated.timing(spinValue, {
         toValue: 1,
-        duration: 5000,
+        duration: 3500,
         useNativeDriver: true,
       }),
       Animated.timing(sizeAnim, {
         toValue: 0.5,
-        duration: 5000,
+        duration: 3500,
         useNativeDriver: true,
       })
     ]).start();
@@ -58,24 +54,23 @@ export default function AnimateSvg(props) {
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 5000,
-        delay: 1500,
+        duration: 3000,
+        delay: 500,
         useNativeDriver: true,
       }),
       Animated.timing(spinValue, {
         toValue: 0,
-        duration: 5000,
-        delay: 1500,
+        duration: 3000,
+        delay: 500,
         useNativeDriver: true,
       }),
       Animated.timing(sizeAnim, {
         toValue: 1,
-        duration: 5000,
-        delay: 1500,
+        duration: 3000,
+        delay: 500,
         useNativeDriver: true,
       })
     ]).start();
-    // spinValue.setValue(0);
   }
 
   return (
@@ -83,7 +78,6 @@ export default function AnimateSvg(props) {
       ...props.style,
       opacity: fadeAnim, // Bind opacity to animated value
       transform: [{ rotate: spin }, { scale: sizeAnim }],
-      // zIndex: 2,
       position: 'absolute',
       left: '6%',
       height: '100%',

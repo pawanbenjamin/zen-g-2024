@@ -15,11 +15,6 @@ export default function Quotes(props) {
   const [registered, setRegistered] = useState(0);
   let shake = useIsShake();
 
-  // useEffect(() => {
-  //   console.log(quotes);
-  //   console.log(quotes[quote]);
-  // })
-
   if (shake === true && registered === 0) {
     setRegistered(1);
     const newQuote = getRandomInt(quotes.length);
@@ -27,8 +22,6 @@ export default function Quotes(props) {
   } else if (shake === false && registered === 1) {
     setRegistered(0);
   }
-
-  // let getQuote = quotes[quote];
 
   function getRandomInt(max) {
     return Math.floor(Math.random() * max);
@@ -46,11 +39,4 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
   },
-  container: {
-    // positioning experiment ------
-    position: 'absolute',
-    height: 'auto',
-    width: 'auto',
-    zIndex: 1,
-  }
 })
