@@ -1,43 +1,44 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Animated, Text, View } from 'react-native';
-import useIsShake from './useIsShake';
+import { useIsShake } from './useIsShake';
+import { QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION } from './constants';
 
 export default function AnimateQuotes(props) {
-  const [registered, setRegistered] = useState(0);
+  const [registered, setRegistered] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const sizeAnim = useRef(new Animated.Value(0.5)).current;
 
-  let shake = useIsShake();
+  const { toggle } = useIsShake();
 
   // lands on LogoSvg between quotes
-  if (shake === true && registered === 0) {
-    setRegistered(1);
+  if (toggle === true && registered === false) {
+    setRegistered(true);
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 2500,
-        delay: 1000,
+        duration: QUOTES_IN_DURATION,
+        delay: QUOTES_IN_DELAY,
         useNativeDriver: true,
       }),
       Animated.timing(sizeAnim, {
         toValue: 1,
-        duration: 2500,
-        delay: 1000,
+        duration: QUOTES_IN_DURATION,
+        delay: QUOTES_IN_DELAY,
         useNativeDriver: true,
       })
     ]).start();
-  } else if (shake === false && registered === 1) {
-    setRegistered(0);
+  } else if (toggle === false && registered === true) {
+    setRegistered(false);
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 3000,
+        duration: QUOTES_OUT_DURATION,
         useNativeDriver: true,
       }),
       Animated.timing(sizeAnim, {
         toValue: 0.5,
-        duration: 3000,
+        duration: QUOTES_OUT_DURATION,
         useNativeDriver: true,
       })
     ]).start();

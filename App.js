@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import LogoSvg from "./LogoSvg";
 import Quotes from "./Quotes";
-// import Accel from './Accelerometer';
-// import useIsShake from './useIsShake';
 import AnimateSvg from './AnimateSvg';
 import AnimateQuotes from './AnimateQuotes';
 

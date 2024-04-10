@@ -1,10 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Animated, Text, View } from 'react-native';
-import useIsShake from './useIsShake';
-// import SvgComponent from "./LogoSvg";
+import { useIsShake } from './useIsShake';
+import { SVG_LOAD_DURATION, SVG_OUT_DURATION, SVG_IN_DURATION, SVG_IN_DELAY } from './constants';
 
 export default function AnimateSvg(props) {
-  const [registered, setRegistered] = useState(0);
+  const [registered, setRegistered] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const spinValue = useRef(new Animated.Value(0)).current;
@@ -14,60 +14,55 @@ export default function AnimateSvg(props) {
   });
   const sizeAnim = useRef(new Animated.Value(1)).current;
 
-  let shake = useIsShake();
+  const { toggle } = useIsShake();
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 3000,
+      duration: SVG_LOAD_DURATION,
       useNativeDriver: true,
     }).start();
   }, []);
 
   // lands on LogoSvg between quotes
-  if (shake === true && registered === 0) {
-    setRegistered((oldState) => {
-      return 1;
-    });
+  if (toggle === true && registered === false) {
+    setRegistered(true);
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 3500,
+        duration: SVG_OUT_DURATION,
         useNativeDriver: true,
       }),
       Animated.timing(spinValue, {
         toValue: 1,
-        duration: 3500,
+        duration: SVG_OUT_DURATION,
         useNativeDriver: true,
       }),
       Animated.timing(sizeAnim, {
         toValue: 0.5,
-        duration: 3500,
+        duration: SVG_OUT_DURATION,
         useNativeDriver: true,
       })
     ]).start();
-  } else if (shake === false && registered === 1) {
-    setRegistered((oldState) => {
-      console.log("old registered:", oldState);
-      return 0;
-    });
+  } else if (toggle === false && registered === true) {
+    setRegistered(false);
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 3000,
-        delay: 500,
+        duration: SVG_IN_DURATION,
+        delay: SVG_IN_DELAY,
         useNativeDriver: true,
       }),
       Animated.timing(spinValue, {
         toValue: 0,
-        duration: 3000,
-        delay: 500,
+        duration: SVG_IN_DURATION,
+        delay: SVG_IN_DELAY,
         useNativeDriver: true,
       }),
       Animated.timing(sizeAnim, {
         toValue: 1,
-        duration: 3000,
-        delay: 500,
+        duration: SVG_IN_DURATION,
+        delay: SVG_IN_DELAY,
         useNativeDriver: true,
       })
     ]).start();

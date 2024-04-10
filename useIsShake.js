@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Accelerometer } from 'expo-sensors';
 
-export default function useIsShake() {
+export function useIsShake() {
   const [{ x, y, z }, setData] = useState({
     x: 0,
     y: 0,
     z: 0,
   });
   const [subscription, setSubscription] = useState(null);
-  const [renderSVG, setRenderSVG] = useState(false);
+  const [toggle, setToggle] = useState(false);
 
   let polls = [null, null];
   let diffs = [];
@@ -18,7 +18,7 @@ export default function useIsShake() {
     if (diffs.length === 2) {
       shakeCount++;
       let newState;
-      setRenderSVG((oldState) => {
+      setToggle((oldState) => {
         console.log("oldState:", oldState);
         newState = !oldState
         return !oldState;
@@ -56,9 +56,8 @@ export default function useIsShake() {
 
   useEffect(() => {
     _subscribe();
-    console.log("useEffect");
     return () => _unsubscribe();
   }, []);
 
-  return renderSVG;
+  return { toggle };
 };
