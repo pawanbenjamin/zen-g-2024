@@ -18,7 +18,6 @@ export function useIsShake() {
 
   function isShake({ x: newX, y: newY, z: newZ }) {
     if (diffs.length === 2) {
-      // console.log("isShake if block");
       shakeCount++;
       let initialReadyToggleState;
       let newToggleState;
@@ -32,22 +31,17 @@ export function useIsShake() {
 
       if (initialReadyToggleState === true) {
         setToggle((oldToggleState) => {
-          // console.log("oldToggleState:", oldToggleState);
           newToggleState = !oldToggleState
           return !oldToggleState;
         });
         let throttleTime;
         if (newToggleState === true) {
-          // console.log("toggle === true");
           throttleTime = Math.max(SVG_OUT_DURATION, (QUOTES_IN_DURATION + QUOTES_IN_DELAY));
         } else {
-          // console.log("toggle === false");
           throttleTime = Math.max(QUOTES_OUT_DURATION, (SVG_IN_DURATION + SVG_IN_DELAY));
         }
         setTimeout(() => {
-          // console.log("setTimeout after shake toggle");
           setReadyToggle((oldReadyToggleState) => {
-            // console.log("old readyToggle:", oldReadyToggleState);
             return true;
           });
         }, throttleTime);
@@ -89,11 +83,7 @@ export function useIsShake() {
     _subscribe();
 
     setTimeout(() => {
-      // console.log("setTimeout on load");
-      setReadyToggle((oldState) => {
-        // console.log("old readyToggle:", oldState);
-        return true;
-      });
+      setReadyToggle(true);
     }, SVG_LOAD_DURATION);
 
     return () => _unsubscribe();
