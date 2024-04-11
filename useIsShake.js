@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Accelerometer } from 'expo-sensors';
+import { QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, SVG_LOAD_DURATION, SVG_OUT_DURATION, SVG_IN_DURATION, SVG_IN_DELAY } from './constants';
 
 export function useIsShake() {
   const [{ x, y, z }, setData] = useState({
@@ -9,6 +10,7 @@ export function useIsShake() {
   });
   const [subscription, setSubscription] = useState(null);
   const [toggle, setToggle] = useState(false);
+  const [readyToggle, setReadyToggle] = useState(false);
 
   let polls = [null, null];
   let diffs = [];
@@ -16,14 +18,43 @@ export function useIsShake() {
 
   function isShake({ x: newX, y: newY, z: newZ }) {
     if (diffs.length === 2) {
+      // console.log("isShake if block");
       shakeCount++;
-      let newState;
-      setToggle((oldState) => {
-        console.log("oldState:", oldState);
-        newState = !oldState
-        return !oldState;
+      let initialReadyToggleState;
+      let newToggleState;
+
+      setReadyToggle((oldReadyToggleState) => {
+        initialReadyToggleState = oldReadyToggleState;
+        if (oldReadyToggleState === true) {
+          return false;
+        } else return oldReadyToggleState;
       });
-      console.log({ shakeCount, diffs, newState });
+
+      if (initialReadyToggleState === true) {
+        setToggle((oldToggleState) => {
+          // console.log("oldToggleState:", oldToggleState);
+          newToggleState = !oldToggleState
+          return !oldToggleState;
+        });
+        let throttleTime;
+        if (newToggleState === true) {
+          // console.log("toggle === true");
+          throttleTime = Math.max(SVG_OUT_DURATION, (QUOTES_IN_DURATION + QUOTES_IN_DELAY));
+        } else {
+          // console.log("toggle === false");
+          throttleTime = Math.max(QUOTES_OUT_DURATION, (SVG_IN_DURATION + SVG_IN_DELAY));
+        }
+        setTimeout(() => {
+          // console.log("setTimeout after shake toggle");
+          setReadyToggle((oldReadyToggleState) => {
+            // console.log("old readyToggle:", oldReadyToggleState);
+            return true;
+          });
+        }, throttleTime);
+      }
+
+      console.log({ shakeCount, diffs, initialReadyToggleState, newToggleState });
+
       polls = [null, null];
       diffs = [];
     }
@@ -56,6 +87,15 @@ export function useIsShake() {
 
   useEffect(() => {
     _subscribe();
+
+    setTimeout(() => {
+      // console.log("setTimeout on load");
+      setReadyToggle((oldState) => {
+        // console.log("old readyToggle:", oldState);
+        return true;
+      });
+    }, SVG_LOAD_DURATION);
+
     return () => _unsubscribe();
   }, []);
 
