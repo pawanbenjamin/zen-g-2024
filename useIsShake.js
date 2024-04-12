@@ -20,27 +20,27 @@ export function useIsShake() {
   function isShake({ x: newX, y: newY, z: newZ }) {
     if (diffs.length === 2) {
       shakeCount++;
-      let initialReadyToggleState;
+      let readyToggleState;
       let newToggleState;
       let toggledBefore;
 
       setReadyToggle((oldReadyToggleState) => {
-        initialReadyToggleState = oldReadyToggleState;
+        readyToggleState = oldReadyToggleState;
         if (oldReadyToggleState === true) {
           return false;
         } else return oldReadyToggleState;
       });
 
-      if (initialReadyToggleState === true) {
+      if (readyToggleState === true) {
+        setToggle((oldToggleState) => {
+          newToggleState = !oldToggleState
+          return true;
+        });
+        console.log("1st newToggleState:", newToggleState);
         setInitiallyRegistered((oldInitialRegister) => {
           toggledBefore = oldInitialRegister;
           return true;
         })
-        setToggle((oldToggleState) => {
-          newToggleState = !oldToggleState
-          return !oldToggleState;
-        });
-        console.log("1st newToggleState:", newToggleState);
         let throttleTime;
         if (toggledBefore === false) {
           throttleTime = Math.max(SVG_OUT_DURATION, (QUOTES_IN_DURATION + QUOTES_IN_DELAY));
@@ -50,7 +50,7 @@ export function useIsShake() {
         setTimeout(() => {
           setToggle((oldToggleState) => {
             newToggleState = !oldToggleState;
-            return !oldToggleState;
+            return false;
           })
           console.log("2nd newToggleState:", newToggleState);
         }, SVG_OUT_DURATION);
@@ -61,7 +61,7 @@ export function useIsShake() {
         }, throttleTime);
       }
 
-      console.log({ shakeCount, diffs, initialReadyToggleState, toggledBefore });
+      console.log({ shakeCount, diffs, initialReadyToggleState: readyToggleState, toggledBefore });
 
       polls = [null, null];
       diffs = [];

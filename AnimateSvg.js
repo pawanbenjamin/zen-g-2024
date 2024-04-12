@@ -15,6 +15,7 @@ export default function AnimateSvg(props) {
   const sizeAnim = useRef(new Animated.Value(1)).current;
 
   const { toggle } = useIsShake();
+  let hasRegistered;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -23,51 +24,15 @@ export default function AnimateSvg(props) {
       useNativeDriver: true,
     }).start();
   }, []);
-  console.log("toggle:", toggle);
+
   // LogoSvg fades out first time
-  if (toggle === true && registered === false) {
-    console.log('here');
-    setRegistered(true);
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: SVG_OUT_DURATION,
-        useNativeDriver: true,
-      }),
-      Animated.timing(spinValue, {
-        toValue: 1,
-        duration: SVG_OUT_DURATION,
-        useNativeDriver: true,
-      }),
-      Animated.timing(sizeAnim, {
-        toValue: 0.5,
-        duration: SVG_OUT_DURATION,
-        useNativeDriver: true,
-      }),
-    ]).start();
-    // LogoSvg fades in and then back out in sequence
-  } else if (toggle === true && registered === true) {
-    Animated.sequence([
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: SVG_IN_DURATION,
-          delay: SVG_IN_DELAY,
-          useNativeDriver: true,
-        }),
-        Animated.timing(spinValue, {
-          toValue: 0,
-          duration: SVG_IN_DURATION,
-          delay: SVG_IN_DELAY,
-          useNativeDriver: true,
-        }),
-        Animated.timing(sizeAnim, {
-          toValue: 1,
-          duration: SVG_IN_DURATION,
-          delay: SVG_IN_DELAY,
-          useNativeDriver: true,
-        }),
-      ]),
+  if (toggle === true) {
+    console.log('here***************');
+    setRegistered((oldRegistered) => {
+      hasRegistered = oldRegistered;
+      return true;
+    });
+    if (hasRegistered === false) {
       Animated.parallel([
         Animated.timing(fadeAnim, {
           toValue: 0,
@@ -84,8 +49,51 @@ export default function AnimateSvg(props) {
           duration: SVG_OUT_DURATION,
           useNativeDriver: true,
         }),
-      ]),
-    ]).start();
+      ]).start();
+      console.log("end of first if block");
+      // LogoSvg fades in and then back out in sequence
+    } else if (hasRegistered === true) {
+      console.log("2nd if block");
+      Animated.sequence([
+        Animated.parallel([
+          Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: SVG_IN_DURATION,
+            delay: SVG_IN_DELAY,
+            useNativeDriver: true,
+          }),
+          Animated.timing(spinValue, {
+            toValue: 0,
+            duration: SVG_IN_DURATION,
+            delay: SVG_IN_DELAY,
+            useNativeDriver: true,
+          }),
+          Animated.timing(sizeAnim, {
+            toValue: 1,
+            duration: SVG_IN_DURATION,
+            delay: SVG_IN_DELAY,
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.parallel([
+          Animated.timing(fadeAnim, {
+            toValue: 0,
+            duration: SVG_OUT_DURATION,
+            useNativeDriver: true,
+          }),
+          Animated.timing(spinValue, {
+            toValue: 1,
+            duration: SVG_OUT_DURATION,
+            useNativeDriver: true,
+          }),
+          Animated.timing(sizeAnim, {
+            toValue: 0.5,
+            duration: SVG_OUT_DURATION,
+            useNativeDriver: true,
+          }),
+        ]),
+      ]).start();
+    }
   }
 
   return (
