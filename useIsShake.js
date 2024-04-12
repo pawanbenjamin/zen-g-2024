@@ -11,6 +11,7 @@ export function useIsShake() {
   const [subscription, setSubscription] = useState(null);
   const [toggle, setToggle] = useState(false);
   const [readyToggle, setReadyToggle] = useState(false);
+  const [initiallyRegistered, setInitiallyRegistered] = useState(false);
 
   let polls = [null, null];
   let diffs = [];
@@ -21,6 +22,7 @@ export function useIsShake() {
       shakeCount++;
       let initialReadyToggleState;
       let newToggleState;
+      let toggledBefore;
 
       setReadyToggle((oldReadyToggleState) => {
         initialReadyToggleState = oldReadyToggleState;
@@ -30,16 +32,28 @@ export function useIsShake() {
       });
 
       if (initialReadyToggleState === true) {
+        setInitiallyRegistered((oldInitialRegister) => {
+          toggledBefore = oldInitialRegister;
+          return true;
+        })
         setToggle((oldToggleState) => {
           newToggleState = !oldToggleState
           return !oldToggleState;
         });
+        console.log("1st newToggleState:", newToggleState);
         let throttleTime;
-        if (newToggleState === true) {
+        if (toggledBefore === false) {
           throttleTime = Math.max(SVG_OUT_DURATION, (QUOTES_IN_DURATION + QUOTES_IN_DELAY));
         } else {
-          throttleTime = Math.max(QUOTES_OUT_DURATION, (SVG_IN_DURATION + SVG_IN_DELAY));
+          throttleTime = (Math.max(QUOTES_OUT_DURATION, SVG_IN_DURATION) + SVG_IN_DELAY) + (Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
         }
+        setTimeout(() => {
+          setToggle((oldToggleState) => {
+            newToggleState = !oldToggleState;
+            return !oldToggleState;
+          })
+          console.log("2nd newToggleState:", newToggleState);
+        }, SVG_OUT_DURATION);
         setTimeout(() => {
           setReadyToggle((oldReadyToggleState) => {
             return true;
@@ -47,7 +61,7 @@ export function useIsShake() {
         }, throttleTime);
       }
 
-      console.log({ shakeCount, diffs, initialReadyToggleState, newToggleState });
+      console.log({ shakeCount, diffs, initialReadyToggleState, toggledBefore });
 
       polls = [null, null];
       diffs = [];

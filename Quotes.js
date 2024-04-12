@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useIsShake } from './useIsShake';
+import { QUOTES_OUT_DURATION } from './constants';
 
 const quotes = [
   "onus is on us.",
@@ -19,8 +20,11 @@ export default function Quotes(props) {
     setRegistered(true);
     const newQuote = getRandomInt(quotes.length);
     setQuote(newQuote);
-  } else if (toggle === false && registered === true) {
-    setRegistered(false);
+  } else if (toggle === true && registered === true) {
+    setTimeout(() => {
+      const newQuote = getRandomInt(quotes.length);
+      setQuote(newQuote);
+    }, QUOTES_OUT_DURATION);
   }
 
   function getRandomInt(max) {
