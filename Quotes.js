@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useIsShake } from './useIsShake';
-import { QUOTES_OUT_DURATION } from './constants';
+import { QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, SVG_OUT_DURATION, SVG_IN_DURATION, SVG_IN_DELAY } from './constants';
 
 const quotes = [
   "onus is on us.",
@@ -14,17 +14,31 @@ const quotes = [
 export default function Quotes(props) {
   const [quote, setQuote] = useState(0);
   const [registered, setRegistered] = useState(false);
+  const [toggledBefore, setToggledBefore] = useState(false);
   const { toggle } = useIsShake();
 
-  if (toggle === true && registered === false) {
+  if (toggle === true && toggledBefore === false && registered === false) {
+    console.log("Quotes, 1st if block");
     setRegistered(true);
     const newQuote = getRandomInt(quotes.length);
     setQuote(newQuote);
-  } else if (toggle === true && registered === true) {
+    setTimeout(() => {
+      setRegistered(false);
+      setToggledBefore(true);
+      console.log("Quotes, 1st if block, setTimeout");
+    }, Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
+  } else if (toggle === true && toggledBefore === true && registered === false) {
+    console.log("Quotes, 2nd if block");
+    setRegistered(true);
     setTimeout(() => {
       const newQuote = getRandomInt(quotes.length);
       setQuote(newQuote);
+      console.log("Quotes, 2nd if Block, 1st setTimeout, setQuote()");
     }, QUOTES_OUT_DURATION);
+    setTimeout(() => {
+      setRegistered(false);
+      console.log("Quotes, 2nd if block, 2nd setTimout, setRegistered()");
+    }, Math.max(QUOTES_OUT_DURATION, SVG_IN_DURATION) + SVG_IN_DELAY + Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
   }
 
   function getRandomInt(max) {
