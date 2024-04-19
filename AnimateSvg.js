@@ -16,8 +16,6 @@ export default function AnimateSvg(props) {
   const sizeAnim = useRef(new Animated.Value(1)).current;
 
   const { toggle } = useIsShake();
-  // let toggledOnce = false;
-  // let hasRegistered;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -30,16 +28,8 @@ export default function AnimateSvg(props) {
   // LogoSvg fades out first time
   if (toggle === true && toggledBefore === false && registered === false) {
     console.log('AnimateSvg, 1st if block, beginning');
-    setRegistered(() => {
-      // hasRegistered = true;
-      return true;
-    });
-    setToggledBefore(() => {
-      // toggledOnce = true;
-      return true;
-    });
-    // setToggledBefore(true);
-    // toggledBefore = true;
+    setRegistered(true);
+    setToggledBefore(true);
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 0,
@@ -58,10 +48,7 @@ export default function AnimateSvg(props) {
       }),
     ]).start();
     setTimeout(() => {
-      setRegistered(() => {
-        // hasRegistered = false;
-        return false;
-      });
+      setRegistered(false);
       console.log("AnimateSvg, 1st if block, setTimeout");
     }, Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
     console.log("AnimateSvg, 1st if block, end");

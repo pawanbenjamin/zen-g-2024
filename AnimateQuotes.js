@@ -12,7 +12,7 @@ export default function AnimateQuotes(props) {
 
   const { toggle } = useIsShake();
 
-  // lands on Quotes after LogoSvg fades out
+  // lands on Quotes after LogoSvg fades out first time
   if (toggle === true && toggledBefore === false && registered === false) {
     console.log("AnimateQuotes, 1st if block");
     setRegistered(true);
@@ -34,7 +34,7 @@ export default function AnimateQuotes(props) {
       setRegistered(false);
       setToggledBefore(true);
     }, Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
-    // Quotes fade out, delay for LogoSvg fade in/fade out duration, then Quotes fade back in
+    // Quotes fade out, delay for LogoSvg fade in/fade, then Quotes fade back in
   } else if (toggle === true && toggledBefore === true && registered === false) {
     console.log("AnimateQuotes, 2nd if block");
     setRegistered(true);
@@ -51,18 +51,17 @@ export default function AnimateQuotes(props) {
           useNativeDriver: true,
         }),
       ]),
-      // change delay times to include LogoSvg fade in/fade out
       Animated.parallel([
         Animated.timing(fadeAnim, {
           toValue: 1,
           duration: QUOTES_IN_DURATION,
-          delay: /*SVG_IN_DURATION +*/ QUOTES_IN_DELAY,
+          delay: QUOTES_IN_DELAY,
           useNativeDriver: true,
         }),
         Animated.timing(sizeAnim, {
           toValue: 1,
           duration: QUOTES_IN_DURATION,
-          delay: /*SVG_IN_DURATION +*/ QUOTES_IN_DELAY,
+          delay: QUOTES_IN_DELAY,
           useNativeDriver: true,
         }),
       ]),
