@@ -4,8 +4,8 @@ import { useIsShake } from './useIsShake';
 import { QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, SVG_IN_DELAY, SVG_IN_DURATION, SVG_OUT_DURATION, TRANSITION_TIME_2 } from './constants';
 
 export default function AnimateQuotes(props) {
-  const [registered, setRegistered] = useState(false);
-  const [toggledBefore, setToggledBefore] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [hasToggledBefore, setHasToggledBefore] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const sizeAnim = useRef(new Animated.Value(0.5)).current;
@@ -13,9 +13,10 @@ export default function AnimateQuotes(props) {
   const { toggle } = useIsShake();
 
   // lands on Quotes after LogoSvg fades out first time
-  if (toggle === true && toggledBefore === false && registered === false) {
+  if (toggle === true && hasToggledBefore === false && isRegistered === false) {
     console.log("AnimateQuotes, 1st if block");
-    setRegistered(true);
+    setIsRegistered(true);
+    setHasToggledBefore(true);
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -30,14 +31,14 @@ export default function AnimateQuotes(props) {
         useNativeDriver: true,
       }),
     ]).start();
-    setTimeout(() => {
-      setRegistered(false);
-      setToggledBefore(true);
+    const endOfAnim = setTimeout(() => {
+      setIsRegistered(false);
+      clearTimeout(endOfAnim);
     }, Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
     // Quotes fade out, delay for LogoSvg fade in/fade, then Quotes fade back in
-  } else if (toggle === true && toggledBefore === true && registered === false) {
+  } else if (toggle === true && hasToggledBefore === true && isRegistered === false) {
     console.log("AnimateQuotes, 2nd if block");
-    setRegistered(true);
+    setIsRegistered(true);
     Animated.sequence([
       Animated.parallel([
         Animated.timing(fadeAnim, {
@@ -66,9 +67,10 @@ export default function AnimateQuotes(props) {
         }),
       ]),
     ]).start();
-    setTimeout(() => {
-      setRegistered(false);
-      console.log("AnimateQuotes, 2nd if block, setTimeout")
+    const endOfAnim = setTimeout(() => {
+      setIsRegistered(false);
+      console.log("AnimateQuotes, 2nd if block, setTimeout");
+      clearTimeout(endOfAnim);
     }, Math.max(QUOTES_OUT_DURATION, SVG_IN_DURATION) + SVG_IN_DELAY + Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
   }
 

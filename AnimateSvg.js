@@ -4,8 +4,8 @@ import { useIsShake } from './useIsShake';
 import { SVG_LOAD_DURATION, SVG_OUT_DURATION, SVG_IN_DURATION, SVG_IN_DELAY, QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, TRANSITION_TIME_2 } from './constants';
 
 export default function AnimateSvg(props) {
-  const [registered, setRegistered] = useState(false);
-  const [toggledBefore, setToggledBefore] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [hasToggledBefore, setHasToggledBefore] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const spinValue = useRef(new Animated.Value(0)).current;
@@ -26,10 +26,10 @@ export default function AnimateSvg(props) {
   }, []);
 
   // LogoSvg fades out first time
-  if (toggle === true && toggledBefore === false && registered === false) {
+  if (toggle === true && hasToggledBefore === false && isRegistered === false) {
     console.log('AnimateSvg, 1st if block, beginning');
-    setRegistered(true);
-    setToggledBefore(true);
+    setIsRegistered(true);
+    setHasToggledBefore(true);
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 0,
@@ -47,15 +47,16 @@ export default function AnimateSvg(props) {
         useNativeDriver: true,
       }),
     ]).start();
-    setTimeout(() => {
-      setRegistered(false);
+    const endOfAnim = setTimeout(() => {
+      setIsRegistered(false);
       console.log("AnimateSvg, 1st if block, setTimeout");
+      clearTimeout(endOfAnim);
     }, Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
     console.log("AnimateSvg, 1st if block, end");
     // LogoSvg fades in and then back out in sequence
-  } else if (toggle === true && toggledBefore === true && registered === false) {
+  } else if (toggle === true && hasToggledBefore === true && isRegistered === false) {
     console.log("AnimateSvg, 2nd if block");
-    setRegistered(true);
+    setIsRegistered(true);
     Animated.sequence([
       Animated.parallel([
         Animated.timing(fadeAnim, {
@@ -95,9 +96,10 @@ export default function AnimateSvg(props) {
         }),
       ]),
     ]).start();
-    setTimeout(() => {
-      setRegistered(false);
+    const endOfAnim = setTimeout(() => {
+      setIsRegistered(false);
       console.log("AnimateSvg, 2nd if block, setTimeout");
+      clearTimeout(endOfAnim);
     }, Math.max(QUOTES_OUT_DURATION, SVG_IN_DURATION) + SVG_IN_DELAY + Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
   }
 

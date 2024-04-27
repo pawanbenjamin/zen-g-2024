@@ -20,7 +20,7 @@ const quotes = [
   "colonialism has people convinced that we must take from someone else to get ahead.",
   "indigenous people understand that to serve the community helps everyone.",
   "if we care about the place in which we live, we must value the artists who help make it beautiful.",
-  "we are here o assist in each other's evolution.",
+  "we are here to assist in each other's evolution.",
   "art is not here to make you feel good. it's here to make you grow, which is good for you.",
   "take care of the music and the music will take care of you.",
   "protect the people you love. call out bullshit at all costs. appreciate free thought in all its glory.",
@@ -38,22 +38,25 @@ export default function Quotes(props) {
     setRegistered(true);
     const newQuote = getRandomInt(quotes.length);
     setQuote(newQuote);
-    setTimeout(() => {
+    const endOfAnim = setTimeout(() => {
       setRegistered(false);
       setToggledBefore(true);
       console.log("Quotes, 1st if block, setTimeout");
+      clearTimeout(endOfAnim);
     }, Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
   } else if (toggle === true && toggledBefore === true && registered === false) {
     console.log("Quotes, 2nd if block");
     setRegistered(true);
-    setTimeout(() => {
+    const changeQuote = setTimeout(() => {
       const newQuote = getRandomInt(quotes.length);
       setQuote(newQuote);
       console.log("Quotes, 2nd if Block, 1st setTimeout, setQuote()");
+      clearTimeout(changeQuote);
     }, QUOTES_OUT_DURATION);
-    setTimeout(() => {
+    const endOfAnim = setTimeout(() => {
       setRegistered(false);
       console.log("Quotes, 2nd if block, 2nd setTimout, setRegistered()");
+      clearTimeout(endOfAnim);
     }, Math.max(QUOTES_OUT_DURATION, SVG_IN_DURATION) + SVG_IN_DELAY + Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
   }
 
