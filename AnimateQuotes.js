@@ -13,8 +13,7 @@ export default function AnimateQuotes(props) {
   const { toggle } = useIsShake();
 
   // lands on Quotes after LogoSvg fades out first time
-  if (toggle === true && hasToggledBefore === false && isRegistered === false) {
-    console.log("AnimateQuotes, 1st if block");
+  if (toggle && !hasToggledBefore && !isRegistered) {
     setIsRegistered(true);
     setHasToggledBefore(true);
     Animated.parallel([
@@ -36,8 +35,7 @@ export default function AnimateQuotes(props) {
       clearTimeout(endOfAnim);
     }, Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
     // Quotes fade out, delay for LogoSvg fade in/fade, then Quotes fade back in
-  } else if (toggle === true && hasToggledBefore === true && isRegistered === false) {
-    console.log("AnimateQuotes, 2nd if block");
+  } else if (toggle && hasToggledBefore && !isRegistered) {
     setIsRegistered(true);
     Animated.sequence([
       Animated.parallel([
@@ -69,7 +67,6 @@ export default function AnimateQuotes(props) {
     ]).start();
     const endOfAnim = setTimeout(() => {
       setIsRegistered(false);
-      console.log("AnimateQuotes, 2nd if block, setTimeout");
       clearTimeout(endOfAnim);
     }, Math.max(QUOTES_OUT_DURATION, SVG_IN_DURATION) + SVG_IN_DELAY + Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
   }
@@ -78,7 +75,7 @@ export default function AnimateQuotes(props) {
     <Animated.View style={{
       ...props.style,
       opacity: fadeAnim, // Bind opacity to animated value
-      transform: [{ scale: sizeAnim }],
+      transform: [{ scale: sizeAnim }], // Bind transform to animated value
       position: 'absolute',
       left: '6%',
       top: '45%',

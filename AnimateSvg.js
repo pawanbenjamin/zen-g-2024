@@ -26,8 +26,7 @@ export default function AnimateSvg(props) {
   }, []);
 
   // LogoSvg fades out first time
-  if (toggle === true && hasToggledBefore === false && isRegistered === false) {
-    console.log('AnimateSvg, 1st if block, beginning');
+  if (toggle && !hasToggledBefore && !isRegistered) {
     setIsRegistered(true);
     setHasToggledBefore(true);
     Animated.parallel([
@@ -49,13 +48,10 @@ export default function AnimateSvg(props) {
     ]).start();
     const endOfAnim = setTimeout(() => {
       setIsRegistered(false);
-      console.log("AnimateSvg, 1st if block, setTimeout");
       clearTimeout(endOfAnim);
     }, Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
-    console.log("AnimateSvg, 1st if block, end");
     // LogoSvg fades in and then back out in sequence
-  } else if (toggle === true && hasToggledBefore === true && isRegistered === false) {
-    console.log("AnimateSvg, 2nd if block");
+  } else if (toggle && hasToggledBefore && !isRegistered) {
     setIsRegistered(true);
     Animated.sequence([
       Animated.parallel([
@@ -98,7 +94,6 @@ export default function AnimateSvg(props) {
     ]).start();
     const endOfAnim = setTimeout(() => {
       setIsRegistered(false);
-      console.log("AnimateSvg, 2nd if block, setTimeout");
       clearTimeout(endOfAnim);
     }, Math.max(QUOTES_OUT_DURATION, SVG_IN_DURATION) + SVG_IN_DELAY + Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
   }
@@ -107,7 +102,7 @@ export default function AnimateSvg(props) {
     <Animated.View style={{
       ...props.style,
       opacity: fadeAnim, // Bind opacity to animated value
-      transform: [{ rotate: spin }, { scale: sizeAnim }],
+      transform: [{ rotate: spin }, { scale: sizeAnim }], // Bind transform to animated values
       position: 'absolute',
       left: '6%',
       height: '100%',

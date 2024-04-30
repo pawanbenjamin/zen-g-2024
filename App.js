@@ -7,7 +7,7 @@ import AnimateQuotes from './AnimateQuotes';
 
 export default function App() {
   return (
-    <View style={styles.window}>
+    <View style={styles.container}>
       <AnimateSvg>
         <LogoSvg />
       </AnimateSvg>
@@ -19,7 +19,7 @@ export default function App() {
 };
 
 const styles = StyleSheet.create({
-  window: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 20,
