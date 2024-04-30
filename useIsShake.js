@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Accelerometer } from 'expo-sensors';
-import { QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, SVG_LOAD_DURATION, SVG_OUT_DURATION, SVG_IN_DURATION, SVG_IN_DELAY, TRANSITION_TIME_2 } from './constants';
+import { SVG_LOAD_DURATION, TRANSITION_TIME_ON_INIT, TRANSITION_TIME } from './constants';
 
 export function useIsShake() {
   const [{ x }, setData] = useState({
     x: 0,
   });
   const [subscription, setSubscription] = useState(null);
-  const [toggle, setToggle] = useState(false);
+  const [isShakeTriggered, setIsShakeTriggered] = useState(false);
 
   let polls = [null, null];
   let diffs = [];
@@ -19,7 +19,7 @@ export function useIsShake() {
     if (isToggleReady === true) {
       if (diffs.length === 2) {
         shakeCount++;
-        setToggle(true);
+        setIsShakeTriggered(true);
         isToggleReady = false;
 
         if (hasToggledBefore === undefined) hasToggledBefore = false;
@@ -27,19 +27,22 @@ export function useIsShake() {
 
         let debounceTime;
         if (hasToggledBefore === false) {
-          debounceTime = Math.max(SVG_OUT_DURATION, (QUOTES_IN_DURATION + QUOTES_IN_DELAY));
+          debounceTime = TRANSITION_TIME_ON_INIT;
         } else {
-          debounceTime = TRANSITION_TIME_2;
+          debounceTime = TRANSITION_TIME;
         }
 
         const toReady = setTimeout(() => {
-          setToggle(false);
+          // setToggle(false);
           isToggleReady = true;
+          console.log("useIsShake, setTimeout - toggle: false, isToggleReady: true");
           clearTimeout(toReady);
         }, debounceTime);
 
         polls = [null, null];
         diffs = [];
+        //setToggle experiment
+        setIsShakeTriggered(false);
       }
 
       if (newX < 0) polls[0] = newX;
@@ -73,11 +76,12 @@ export function useIsShake() {
 
     const onLoad = setTimeout(() => {
       isToggleReady = true;
+      console.log("isToggleReady set to:", isToggleReady);
       clearTimeout(onLoad);
     }, SVG_LOAD_DURATION);
 
     return () => _unsubscribe();
   }, []);
 
-  return { toggle };
+  return { isShakeTriggered };
 };

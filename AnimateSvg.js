@@ -1,10 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Animated, Text, View } from 'react-native';
 import { useIsShake } from './useIsShake';
-import { SVG_LOAD_DURATION, SVG_OUT_DURATION, SVG_IN_DURATION, SVG_IN_DELAY, QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, TRANSITION_TIME_2 } from './constants';
+import { SVG_LOAD_DURATION, SVG_OUT_DURATION, SVG_IN_DURATION, SVG_IN_DELAY, QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, TRANSITION_TIME } from './constants';
 
 export default function AnimateSvg(props) {
-  const [isRegistered, setIsRegistered] = useState(false);
+  // upon cue of an animation, isRegistered is set to true so that animation will not run repeatedly while toggle === true
+  const [isLogoAnimationRunning, setIsLogoAnimationRunning] = useState(false);
+  // if false, first animation will be run from logo -> quotes, then set true and all subsequent animations will follow same pattern of quotes -> logo -> quotes
   const [hasToggledBefore, setHasToggledBefore] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -15,7 +17,7 @@ export default function AnimateSvg(props) {
   });
   const sizeAnim = useRef(new Animated.Value(1)).current;
 
-  const { toggle } = useIsShake();
+  const { isShakeTriggered } = useIsShake();
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -25,10 +27,7 @@ export default function AnimateSvg(props) {
     }).start();
   }, []);
 
-  // LogoSvg fades out first time
-  if (toggle && !hasToggledBefore && !isRegistered) {
-    setIsRegistered(true);
-    setHasToggledBefore(true);
+  function logoAnimationOut() {
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 0,
@@ -45,14 +44,13 @@ export default function AnimateSvg(props) {
         duration: SVG_OUT_DURATION,
         useNativeDriver: true,
       }),
-    ]).start();
-    const endOfAnim = setTimeout(() => {
-      setIsRegistered(false);
-      clearTimeout(endOfAnim);
-    }, Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
-    // LogoSvg fades in and then back out in sequence
-  } else if (toggle && hasToggledBefore && !isRegistered) {
-    setIsRegistered(true);
+    ]).start(({ finished }) => {
+      setIsLogoAnimationRunning(false);
+      console.log("AnimateSvg, start() callback");
+    });
+  }
+
+  function logoAnimationIn_Out() {
     Animated.sequence([
       Animated.parallel([
         Animated.timing(fadeAnim, {
@@ -91,11 +89,23 @@ export default function AnimateSvg(props) {
           useNativeDriver: true,
         }),
       ]),
-    ]).start();
-    const endOfAnim = setTimeout(() => {
-      setIsRegistered(false);
-      clearTimeout(endOfAnim);
-    }, Math.max(QUOTES_OUT_DURATION, SVG_IN_DURATION) + SVG_IN_DELAY + Math.max(SVG_OUT_DURATION, QUOTES_IN_DURATION) + QUOTES_IN_DELAY);
+    ]).start(({ finished }) => {
+      setIsLogoAnimationRunning(false);
+      console.log("AnimateSvg start() callback");
+    });
+  }
+
+  // LogoSvg fades out first time
+  if (isShakeTriggered === true && hasToggledBefore === false && isLogoAnimationRunning === false) {
+    console.log('AnimateSvg, 1st if block, beginning');
+    setIsLogoAnimationRunning(true);
+    setHasToggledBefore(true);
+    logoAnimationOut();
+    // LogoSvg fades in and then back out in sequence
+  } else if (isShakeTriggered === true && hasToggledBefore === true && isLogoAnimationRunning === false) {
+    console.log("AnimateSvg, 2nd if block");
+    setIsLogoAnimationRunning(true);
+    logoAnimationIn_Out();
   }
 
   return (
