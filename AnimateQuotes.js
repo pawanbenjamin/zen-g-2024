@@ -1,22 +1,20 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Animated, Text, View } from 'react-native';
-import { useIsShake } from './useIsShake';
-import { QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, SVG_IN_DELAY, SVG_IN_DURATION, SVG_OUT_DURATION, TRANSITION_TIME } from './constants';
+import { QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, quotes } from './constants';
+import { getRandomInt } from './utils';
+import Quotes from "./Quotes";
 
 export default function AnimateQuotes(props) {
-  const [isRegistered, setIsRegistered] = useState(false);
-  const [hasToggledBefore, setHasToggledBefore] = useState(false);
+  const [isQuoteAnimationRunning, setIsQuoteAnimationRunning] = useState(false);
+  const [quote, setQuote] = useState(0);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const sizeAnim = useRef(new Animated.Value(0.5)).current;
 
-  const { isShakeTriggered } = useIsShake();
+  const { isShakeTriggered, setIsToggleReady } = props.useIsShake;
+  const { hasToggledBefore, setHasToggledBefore } = props.toggledBefore;
 
-  // lands on Quotes after LogoSvg fades out first time
-  if (isShakeTriggered === true && hasToggledBefore === false && isRegistered === false) {
-    console.log("AnimateQuotes, 1st if block");
-    setIsRegistered(true);
-    setHasToggledBefore(true);
+  function quoteAnimationIn() {
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -31,44 +29,64 @@ export default function AnimateQuotes(props) {
         useNativeDriver: true,
       }),
     ]).start(({ finished }) => {
-      setIsRegistered(false);
+      setIsQuoteAnimationRunning(false);
+      setIsToggleReady(true);
+      setHasToggledBefore(true);
       console.log("AnimateQuotes start() callback");
     });
-    // Quotes fade out, delay for LogoSvg fade in/fade, then Quotes fade back in
-  } else if (isShakeTriggered === true && hasToggledBefore === true && isRegistered === false) {
-    console.log("AnimateQuotes, 2nd if block");
-    setIsRegistered(true);
-    Animated.sequence([
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: QUOTES_OUT_DURATION,
-          useNativeDriver: true,
-        }),
-        Animated.timing(sizeAnim, {
-          toValue: 0.5,
-          duration: QUOTES_OUT_DURATION,
-          useNativeDriver: true,
-        }),
-      ]),
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: QUOTES_IN_DURATION,
-          delay: QUOTES_IN_DELAY,
-          useNativeDriver: true,
-        }),
-        Animated.timing(sizeAnim, {
-          toValue: 1,
-          duration: QUOTES_IN_DURATION,
-          delay: QUOTES_IN_DELAY,
-          useNativeDriver: true,
-        }),
-      ]),
+  };
+
+  function quoteAnimationOut_CallbackIn() {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: QUOTES_OUT_DURATION,
+        useNativeDriver: true,
+      }),
+      Animated.timing(sizeAnim, {
+        toValue: 0.5,
+        duration: QUOTES_OUT_DURATION,
+        useNativeDriver: true,
+      }),
     ]).start(({ finished }) => {
-      setIsRegistered(false);
+      const newQuote = getRandomInt(quotes.length);
+      setQuote(newQuote);
+      console.log("AnimateQuotes mid-quoteAnimationOut_In start() callback, setQuote(newQuote)");
+      quoteAnimationBackIn();
+    });
+  };
+
+  function quoteAnimationBackIn() {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: QUOTES_IN_DURATION,
+        delay: QUOTES_IN_DELAY,
+        useNativeDriver: true,
+      }),
+      Animated.timing(sizeAnim, {
+        toValue: 1,
+        duration: QUOTES_IN_DURATION,
+        delay: QUOTES_IN_DELAY,
+        useNativeDriver: true,
+      }),
+    ]).start(({ finished }) => {
+      setIsQuoteAnimationRunning(false);
+      setIsToggleReady(true);
       console.log("AnimateQuotes start() callback");
     });
+  };
+
+  // lands on Quotes after LogoSvg fades out first time
+  if (isShakeTriggered === true && hasToggledBefore === false && isQuoteAnimationRunning === false) {
+    console.log("AnimateQuotes, 1st if block");
+    setIsQuoteAnimationRunning(true);
+    quoteAnimationIn();
+    // Quotes fade out, delay for LogoSvg fade in/fade, then Quotes fade back in
+  } else if (isShakeTriggered === true && hasToggledBefore === true && isQuoteAnimationRunning === false) {
+    console.log("AnimateQuotes, 2nd if block");
+    setIsQuoteAnimationRunning(true);
+    quoteAnimationOut_CallbackIn();
   }
 
   return (
@@ -82,7 +100,7 @@ export default function AnimateQuotes(props) {
       height: '100%',
       width: '100%',
     }}>
-      {props.children}
+      <Quotes quote={{ quote, setQuote }} />
     </Animated.View>
   )
 };

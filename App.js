@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import LogoSvg from "./LogoSvg";
-import Quotes from "./Quotes";
 import AnimateSvg from './AnimateSvg';
 import AnimateQuotes from './AnimateQuotes';
+import { useIsShake } from './useIsShake';
 
 export default function App() {
+  const [hasToggledBefore, setHasToggledBefore] = useState(false);
+  const { isShakeTriggered, setIsToggleReady } = useIsShake();
+
   return (
-    <View style={styles.container}>
-      <AnimateSvg>
-        <LogoSvg />
-      </AnimateSvg>
-      <AnimateQuotes>
-        <Quotes />
-      </AnimateQuotes>
+    <View style={styles.window}>
+      <AnimateSvg useIsShake={{ isShakeTriggered, setIsToggleReady }} toggledBefore={{ hasToggledBefore }} />
+      <AnimateQuotes useIsShake={{ isShakeTriggered, setIsToggleReady }} toggledBefore={{ hasToggledBefore, setHasToggledBefore }} />
     </View>
   )
 };

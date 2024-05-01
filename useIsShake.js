@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Accelerometer } from 'expo-sensors';
-import { SVG_LOAD_DURATION, TRANSITION_TIME_ON_INIT, TRANSITION_TIME } from './constants';
 
 export function useIsShake() {
   const [{ x }, setData] = useState({
@@ -8,55 +7,38 @@ export function useIsShake() {
   });
   const [subscription, setSubscription] = useState(null);
   const [isShakeTriggered, setIsShakeTriggered] = useState(false);
+  const [isToggleReady, setIsToggleReady] = useState(false);
 
   let polls = [null, null];
   let diffs = [];
-  let shakeCount = 0;
-  let isToggleReady;
-  let hasToggledBefore;
 
   function isShake({ x: newX }) {
-    if (isToggleReady === true) {
-      if (diffs.length === 2) {
-        shakeCount++;
-        setIsShakeTriggered(true);
-        isToggleReady = false;
+    // console.log(newX);
 
-        if (hasToggledBefore === undefined) hasToggledBefore = false;
-        else if (hasToggledBefore === false) hasToggledBefore = true;
+    if (diffs.length === 2) {
+      setIsShakeTriggered(true);
+      setIsToggleReady(false);
 
-        let debounceTime;
-        if (hasToggledBefore === false) {
-          debounceTime = TRANSITION_TIME_ON_INIT;
-        } else {
-          debounceTime = TRANSITION_TIME;
-        }
+      console.log("isShakeTriggered", { diffs });
 
-        const toReady = setTimeout(() => {
-          // setToggle(false);
-          isToggleReady = true;
-          console.log("useIsShake, setTimeout - toggle: false, isToggleReady: true");
-          clearTimeout(toReady);
-        }, debounceTime);
+      polls = [null, null];
+      diffs = [];
 
-        polls = [null, null];
-        diffs = [];
-        //setToggle experiment
-        setIsShakeTriggered(false);
-      }
-
-      if (newX < 0) polls[0] = newX;
-      if (newX >= 0) polls[1] = newX;
-      let change;
-
-      if (polls[0] !== null && polls[1] !== null) {
-        change = Math.abs(polls[1] - polls[0]);
-      }
-      if (change > 1.5) {
-        diffs.push(change);
-        polls = [null, null];
-      }
+      setIsShakeTriggered(false);
     }
+
+    if (newX < 0) polls[0] = newX;
+    if (newX >= 0) polls[1] = newX;
+    let change;
+
+    if (polls[0] !== null && polls[1] !== null) {
+      change = Math.abs(polls[1] - polls[0]);
+    }
+    if (change > 1.5) {
+      diffs.push(change);
+      polls = [null, null];
+    }
+
     setData({ x: newX });
   };
 
@@ -72,16 +54,13 @@ export function useIsShake() {
   };
 
   useEffect(() => {
-    _subscribe();
-
-    const onLoad = setTimeout(() => {
-      isToggleReady = true;
-      console.log("isToggleReady set to:", isToggleReady);
-      clearTimeout(onLoad);
-    }, SVG_LOAD_DURATION);
-
+    // invocation of _subscribe when isToggleReady === true
+    if (isToggleReady) {
+      _subscribe();
+      // isShake Accelerometer listener is removed when !isToggleReady
+    } else _unsubscribe();
     return () => _unsubscribe();
-  }, []);
+  }, [isToggleReady]);
 
-  return { isShakeTriggered };
+  return { isShakeTriggered, setIsToggleReady };
 };
