@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import SvgComponent from "./LogoSvg";
+import LogoSvg from "./LogoSvg";
+import Quotes from "./Quotes";
+import AnimateSvg from './AnimateSvg';
+import AnimateQuotes from './AnimateQuotes';
 
 export default function App() {
-
   return (
     <View style={styles.container}>
-      <SvgComponent />
+      <AnimateSvg>
+        <LogoSvg />
+      </AnimateSvg>
+      <AnimateQuotes>
+        <Quotes />
+      </AnimateQuotes>
     </View>
   )
 };
@@ -16,10 +23,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 20,
-    backgroundColor: 'black'
+    backgroundColor: 'black',
+    position: 'relative',
   },
-  text: {
-    textAlign: 'center',
-    color: 'white'
-  }
 });
