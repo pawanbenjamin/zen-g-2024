@@ -9,7 +9,7 @@ export default function App() {
   const { isShakeTriggered, setIsToggleReady } = useIsShake();
 
   return (
-    <View style={styles.window}>
+    <View style={styles.container}>
       <AnimateSvg useIsShake={{ isShakeTriggered, setIsToggleReady }} toggledBefore={{ hasToggledBefore }} />
       <AnimateQuotes useIsShake={{ isShakeTriggered, setIsToggleReady }} toggledBefore={{ hasToggledBefore, setHasToggledBefore }} />
     </View>
