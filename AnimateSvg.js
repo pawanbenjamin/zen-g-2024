@@ -14,8 +14,9 @@ export default function AnimateSvg(props) {
   });
   const sizeAnim = useRef(new Animated.Value(1)).current;
 
-  const { isShakeTriggered, setIsToggleReady } = props.useIsShake;
-  const { hasToggledBefore } = props.toggledBefore;
+  const { isShakeTriggered } = props.isShakeTriggered;
+  const { setIsShakeReady } = props.setIsShakeReady;
+  const { hasToggledBefore } = props.hasToggledBefore;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -23,8 +24,7 @@ export default function AnimateSvg(props) {
       duration: SVG_LOAD_DURATION,
       useNativeDriver: true,
     }).start(({ finished }) => {
-      setIsToggleReady(true);
-      console.log("isToggleReady set true");
+      setIsShakeReady(true);
     });
   }, []);
 
@@ -47,7 +47,6 @@ export default function AnimateSvg(props) {
       }),
     ]).start(({ finished }) => {
       setIsLogoAnimationRunning(false);
-      console.log("AnimateSvg, start() callback");
     });
   };
 
@@ -74,7 +73,6 @@ export default function AnimateSvg(props) {
     ]).start(({ finished }) => {
       logoAnimationBackOut();
       setIsLogoAnimationRunning(false);
-      console.log("AnimateSvg start() callback");
     });
   };
 
@@ -99,13 +97,11 @@ export default function AnimateSvg(props) {
   };
 
   // LogoSvg fades out first time
-  if (isShakeTriggered === true && hasToggledBefore === false && isLogoAnimationRunning === false) {
-    console.log('AnimateSvg, 1st if block, beginning');
+  if (isShakeTriggered && !hasToggledBefore && !isLogoAnimationRunning) {
     setIsLogoAnimationRunning(true);
     logoAnimationOutInitialization();
     // LogoSvg fades in and then back out in sequence
-  } else if (isShakeTriggered === true && hasToggledBefore === true && isLogoAnimationRunning === false) {
-    console.log("AnimateSvg, 2nd if block");
+  } else if (isShakeTriggered && hasToggledBefore && !isLogoAnimationRunning) {
     setIsLogoAnimationRunning(true);
     logoAnimationIn_CallbackOut();
   }

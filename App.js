@@ -6,12 +6,12 @@ import { useIsShake } from './useIsShake';
 
 export default function App() {
   const [hasToggledBefore, setHasToggledBefore] = useState(false);
-  const { isShakeTriggered, setIsToggleReady } = useIsShake();
+  const { isShakeTriggered, setIsShakeReady } = useIsShake();
 
   return (
     <View style={styles.container}>
-      <AnimateSvg useIsShake={{ isShakeTriggered, setIsToggleReady }} toggledBefore={{ hasToggledBefore }} />
-      <AnimateQuotes useIsShake={{ isShakeTriggered, setIsToggleReady }} toggledBefore={{ hasToggledBefore, setHasToggledBefore }} />
+      <AnimateSvg isShakeTriggered={{ isShakeTriggered }} setIsShakeReady={{ setIsShakeReady }} hasToggledBefore={{ hasToggledBefore }} />
+      <AnimateQuotes isShakeTriggered={{ isShakeTriggered }} setIsShakeReady={{ setIsShakeReady }} hasToggledBefore={{ hasToggledBefore }} setHasToggledBefore={{ setHasToggledBefore }} />
     </View>
   )
 };

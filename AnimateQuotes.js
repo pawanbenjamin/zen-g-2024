@@ -11,8 +11,10 @@ export default function AnimateQuotes(props) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const sizeAnim = useRef(new Animated.Value(0.5)).current;
 
-  const { isShakeTriggered, setIsToggleReady } = props.useIsShake;
-  const { hasToggledBefore, setHasToggledBefore } = props.toggledBefore;
+  const { isShakeTriggered } = props.isShakeTriggered;
+  const { setIsShakeReady } = props.setIsShakeReady;
+  const { hasToggledBefore } = props.hasToggledBefore;
+  const { setHasToggledBefore } = props.setHasToggledBefore;
 
   function quoteAnimationIn() {
     Animated.parallel([
@@ -30,9 +32,8 @@ export default function AnimateQuotes(props) {
       }),
     ]).start(({ finished }) => {
       setIsQuoteAnimationRunning(false);
-      setIsToggleReady(true);
+      setIsShakeReady(true);
       setHasToggledBefore(true);
-      console.log("AnimateQuotes start() callback");
     });
   };
 
@@ -51,7 +52,6 @@ export default function AnimateQuotes(props) {
     ]).start(({ finished }) => {
       const newQuote = getRandomInt(quotes.length);
       setQuote(newQuote);
-      console.log("AnimateQuotes mid-quoteAnimationOut_In start() callback, setQuote(newQuote)");
       quoteAnimationBackIn();
     });
   };
@@ -72,19 +72,16 @@ export default function AnimateQuotes(props) {
       }),
     ]).start(({ finished }) => {
       setIsQuoteAnimationRunning(false);
-      setIsToggleReady(true);
-      console.log("AnimateQuotes start() callback");
+      setIsShakeReady(true);
     });
   };
 
   // lands on Quotes after LogoSvg fades out first time
-  if (isShakeTriggered === true && hasToggledBefore === false && isQuoteAnimationRunning === false) {
-    console.log("AnimateQuotes, 1st if block");
+  if (isShakeTriggered && !hasToggledBefore && !isQuoteAnimationRunning) {
     setIsQuoteAnimationRunning(true);
     quoteAnimationIn();
     // Quotes fade out, delay for LogoSvg fade in/fade, then Quotes fade back in
-  } else if (isShakeTriggered === true && hasToggledBefore === true && isQuoteAnimationRunning === false) {
-    console.log("AnimateQuotes, 2nd if block");
+  } else if (isShakeTriggered && hasToggledBefore && !isQuoteAnimationRunning) {
     setIsQuoteAnimationRunning(true);
     quoteAnimationOut_CallbackIn();
   }
@@ -100,7 +97,7 @@ export default function AnimateQuotes(props) {
       height: '100%',
       width: '100%',
     }}>
-      <Quotes quote={{ quote, setQuote }} />
+      <Quotes quote={{ quote }} setQuote={{ setQuote }} />
     </Animated.View>
   )
 };

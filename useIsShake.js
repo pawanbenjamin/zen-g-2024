@@ -7,19 +7,15 @@ export function useIsShake() {
   });
   const [subscription, setSubscription] = useState(null);
   const [isShakeTriggered, setIsShakeTriggered] = useState(false);
-  const [isToggleReady, setIsToggleReady] = useState(false);
+  const [isShakeReady, setIsShakeReady] = useState(false);
 
   let polls = [null, null];
   let diffs = [];
 
   function isShake({ x: newX }) {
-    // console.log(newX);
-
     if (diffs.length === 2) {
       setIsShakeTriggered(true);
-      setIsToggleReady(false);
-
-      console.log("isShakeTriggered", { diffs });
+      setIsShakeReady(false);
 
       polls = [null, null];
       diffs = [];
@@ -29,8 +25,8 @@ export function useIsShake() {
 
     if (newX < 0) polls[0] = newX;
     if (newX >= 0) polls[1] = newX;
-    let change;
 
+    let change;
     if (polls[0] !== null && polls[1] !== null) {
       change = Math.abs(polls[1] - polls[0]);
     }
@@ -55,12 +51,12 @@ export function useIsShake() {
 
   useEffect(() => {
     // invocation of _subscribe when isToggleReady === true
-    if (isToggleReady) {
+    if (isShakeReady) {
       _subscribe();
       // isShake Accelerometer listener is removed when !isToggleReady
     } else _unsubscribe();
     return () => _unsubscribe();
-  }, [isToggleReady]);
+  }, [isShakeReady]);
 
-  return { isShakeTriggered, setIsToggleReady };
+  return { isShakeTriggered, setIsShakeReady };
 };

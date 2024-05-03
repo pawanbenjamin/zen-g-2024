@@ -4,7 +4,8 @@ import { quotes } from './constants';
 import { getRandomInt } from './utils';
 
 export default function Quotes(props) {
-  const { quote, setQuote } = props.quote;
+  const { quote } = props.quote;
+  const { setQuote } = props.setQuote;
 
   useEffect(() => {
     const newQuote = getRandomInt(quotes.length);
