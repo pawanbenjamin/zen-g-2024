@@ -19,7 +19,7 @@ export default function AnimateSvg({ isShakeTriggered, setIsShakeReady, hasIniti
       toValue: 1,
       duration: SVG_LOAD_DURATION,
       useNativeDriver: true,
-    }).start(({ finished }) => {
+    }).start(() => {
       setIsShakeReady(true);
     });
   }, []);
@@ -41,7 +41,7 @@ export default function AnimateSvg({ isShakeTriggered, setIsShakeReady, hasIniti
         duration: SVG_OUT_DURATION,
         useNativeDriver: true,
       }),
-    ]).start(({ finished }) => {
+    ]).start(() => {
       setIsLogoAnimationRunning(false);
     });
   };
@@ -66,7 +66,7 @@ export default function AnimateSvg({ isShakeTriggered, setIsShakeReady, hasIniti
         delay: SVG_IN_DELAY,
         useNativeDriver: true,
       }),
-    ]).start(({ finished }) => {
+    ]).start(() => {
       logoAnimationBackOut();
       setIsLogoAnimationRunning(false);
     });
@@ -104,7 +104,6 @@ export default function AnimateSvg({ isShakeTriggered, setIsShakeReady, hasIniti
 
   return (
     <Animated.View style={{
-      // ...props.style,
       opacity: fadeAnim, // Bind opacity to animated value
       transform: [{ rotate: spin }, { scale: sizeAnim }], // Bind transform to animated values
       position: 'absolute',

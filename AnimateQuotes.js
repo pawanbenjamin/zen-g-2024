@@ -25,7 +25,7 @@ export default function AnimateQuotes({ isShakeTriggered, setIsShakeReady, hasIn
         delay: QUOTES_IN_DELAY,
         useNativeDriver: true,
       }),
-    ]).start(({ finished }) => {
+    ]).start(() => {
       setIsQuoteAnimationRunning(false);
       setIsShakeReady(true);
       setHasInitialTransitionRun(true);
@@ -44,7 +44,7 @@ export default function AnimateQuotes({ isShakeTriggered, setIsShakeReady, hasIn
         duration: QUOTES_OUT_DURATION,
         useNativeDriver: true,
       }),
-    ]).start(({ finished }) => {
+    ]).start(() => {
       const newQuoteIndex = getRandomInt(quotes.length);
       setQuoteIndex(newQuoteIndex);
       quoteAnimationBackIn();
@@ -65,7 +65,7 @@ export default function AnimateQuotes({ isShakeTriggered, setIsShakeReady, hasIn
         delay: QUOTES_IN_DELAY,
         useNativeDriver: true,
       }),
-    ]).start(({ finished }) => {
+    ]).start(() => {
       setIsQuoteAnimationRunning(false);
       setIsShakeReady(true);
     });
@@ -83,7 +83,6 @@ export default function AnimateQuotes({ isShakeTriggered, setIsShakeReady, hasIn
 
   return (
     <Animated.View style={{
-      // ...props.style,
       opacity: fadeAnim, // Bind opacity to animated value
       transform: [{ scale: sizeAnim }], // Bind transform to animated value
       position: 'absolute',
