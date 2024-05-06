@@ -4,17 +4,12 @@ import { QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, quotes } from
 import { getRandomInt } from './utils';
 import Quotes from "./Quotes";
 
-export default function AnimateQuotes(props) {
+export default function AnimateQuotes({ isShakeTriggered, setIsShakeReady, hasInitialTransitionRun, setHasInitialTransitionRun }) {
   const [isQuoteAnimationRunning, setIsQuoteAnimationRunning] = useState(false);
-  const [quote, setQuote] = useState(0);
+  const [quoteIndex, setQuoteIndex] = useState(0);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const sizeAnim = useRef(new Animated.Value(0.5)).current;
-
-  const { isShakeTriggered } = props.isShakeTriggered;
-  const { setIsShakeReady } = props.setIsShakeReady;
-  const { hasToggledBefore } = props.hasToggledBefore;
-  const { setHasToggledBefore } = props.setHasToggledBefore;
 
   function quoteAnimationIn() {
     Animated.parallel([
@@ -33,7 +28,7 @@ export default function AnimateQuotes(props) {
     ]).start(({ finished }) => {
       setIsQuoteAnimationRunning(false);
       setIsShakeReady(true);
-      setHasToggledBefore(true);
+      setHasInitialTransitionRun(true);
     });
   };
 
@@ -50,8 +45,8 @@ export default function AnimateQuotes(props) {
         useNativeDriver: true,
       }),
     ]).start(({ finished }) => {
-      const newQuote = getRandomInt(quotes.length);
-      setQuote(newQuote);
+      const newQuoteIndex = getRandomInt(quotes.length);
+      setQuoteIndex(newQuoteIndex);
       quoteAnimationBackIn();
     });
   };
@@ -77,18 +72,18 @@ export default function AnimateQuotes(props) {
   };
 
   // lands on Quotes after LogoSvg fades out first time
-  if (isShakeTriggered && !hasToggledBefore && !isQuoteAnimationRunning) {
+  if (isShakeTriggered && !hasInitialTransitionRun && !isQuoteAnimationRunning) {
     setIsQuoteAnimationRunning(true);
     quoteAnimationIn();
     // Quotes fade out, delay for LogoSvg fade in/fade, then Quotes fade back in
-  } else if (isShakeTriggered && hasToggledBefore && !isQuoteAnimationRunning) {
+  } else if (isShakeTriggered && hasInitialTransitionRun && !isQuoteAnimationRunning) {
     setIsQuoteAnimationRunning(true);
     quoteAnimationOut_CallbackIn();
   }
 
   return (
     <Animated.View style={{
-      ...props.style,
+      // ...props.style,
       opacity: fadeAnim, // Bind opacity to animated value
       transform: [{ scale: sizeAnim }], // Bind transform to animated value
       position: 'absolute',
@@ -97,7 +92,7 @@ export default function AnimateQuotes(props) {
       height: '100%',
       width: '100%',
     }}>
-      <Quotes quote={{ quote }} setQuote={{ setQuote }} />
+      <Quotes quoteIndex={quoteIndex} setQuoteIndex={setQuoteIndex} />
     </Animated.View>
   )
 };

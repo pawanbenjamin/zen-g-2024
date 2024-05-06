@@ -3,17 +3,14 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { quotes } from './constants';
 import { getRandomInt } from './utils';
 
-export default function Quotes(props) {
-  const { quote } = props.quote;
-  const { setQuote } = props.setQuote;
-
+export default function Quotes({ quoteIndex, setQuoteIndex }) {
   useEffect(() => {
-    const newQuote = getRandomInt(quotes.length);
-    setQuote(newQuote);
+    const newQuoteIndex = getRandomInt(quotes.length);
+    setQuoteIndex(newQuoteIndex);
   }, []);
 
   return (
-    <Text style={styles.text}>{quotes[quote]}</Text>
+    <Text style={styles.text}>{quotes[quoteIndex]}</Text>
   )
 };
 

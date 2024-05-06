@@ -5,13 +5,13 @@ import AnimateQuotes from './AnimateQuotes';
 import { useIsShake } from './useIsShake';
 
 export default function App() {
-  const [hasToggledBefore, setHasToggledBefore] = useState(false);
+  const [hasInitialTransitionRun, setHasInitialTransitionRun] = useState(false);
   const { isShakeTriggered, setIsShakeReady } = useIsShake();
 
   return (
     <View style={styles.container}>
-      <AnimateSvg isShakeTriggered={{ isShakeTriggered }} setIsShakeReady={{ setIsShakeReady }} hasToggledBefore={{ hasToggledBefore }} />
-      <AnimateQuotes isShakeTriggered={{ isShakeTriggered }} setIsShakeReady={{ setIsShakeReady }} hasToggledBefore={{ hasToggledBefore }} setHasToggledBefore={{ setHasToggledBefore }} />
+      <AnimateSvg isShakeTriggered={isShakeTriggered} setIsShakeReady={setIsShakeReady} hasInitialTransitionRun={hasInitialTransitionRun} />
+      <AnimateQuotes isShakeTriggered={isShakeTriggered} setIsShakeReady={setIsShakeReady} hasInitialTransitionRun={hasInitialTransitionRun} setHasInitialTransitionRun={setHasInitialTransitionRun} />
     </View>
   )
 };
