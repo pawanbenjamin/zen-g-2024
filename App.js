@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import LogoSvg from "./LogoSvg";
-import Quotes from "./Quotes";
 import AnimateSvg from './AnimateSvg';
 import AnimateQuotes from './AnimateQuotes';
+import { useIsShake } from './useIsShake';
 
 export default function App() {
+  const [hasInitialTransitionRun, setHasInitialTransitionRun] = useState(false);
+  const { isShakeTriggered, setIsShakeReady } = useIsShake();
+
   return (
     <View style={styles.container}>
-      <AnimateSvg>
-        <LogoSvg />
-      </AnimateSvg>
-      <AnimateQuotes>
-        <Quotes />
-      </AnimateQuotes>
+      <AnimateSvg isShakeTriggered={isShakeTriggered} setIsShakeReady={setIsShakeReady} hasInitialTransitionRun={hasInitialTransitionRun} />
+      <AnimateQuotes isShakeTriggered={isShakeTriggered} setIsShakeReady={setIsShakeReady} hasInitialTransitionRun={hasInitialTransitionRun} setHasInitialTransitionRun={setHasInitialTransitionRun} />
     </View>
   )
 };

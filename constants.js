@@ -7,8 +7,6 @@ export const SVG_OUT_DURATION = 3500;
 export const SVG_IN_DURATION = 3000;
 export const SVG_IN_DELAY = 500;
 
-export const TRANSITION_TIME_2 = Math.max(QUOTES_OUT_DURATION, (SVG_IN_DELAY + SVG_IN_DURATION)) + Math.max(SVG_OUT_DURATION, (QUOTES_IN_DELAY + QUOTES_IN_DURATION));
-
 export const quotes = [
   "onus is on us.",
   "lawbreakers can't be legislated.",
