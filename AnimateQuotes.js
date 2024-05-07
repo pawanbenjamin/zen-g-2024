@@ -1,15 +1,18 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Animated, Text, View } from 'react-native';
-import { QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, quotes } from './constants';
+import { QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, quotes, topPositionPercentDec, leftPositionPercentDec } from './constants';
 import { getRandomInt } from './utils';
 import Quotes from "./Quotes";
 
-export default function AnimateQuotes({ isShakeTriggered, setIsShakeReady, hasInitialTransitionRun, setHasInitialTransitionRun }) {
+export default function AnimateQuotes({ isShakeTriggered, setIsShakeReady, hasInitialTransitionRun, setHasInitialTransitionRun, height, width }) {
   const [isQuoteAnimationRunning, setIsQuoteAnimationRunning] = useState(false);
   const [quoteIndex, setQuoteIndex] = useState(0);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const sizeAnim = useRef(new Animated.Value(0.5)).current;
+
+  const topPx = height * topPositionPercentDec;
+  const leftPx = width * leftPositionPercentDec;
 
   function quoteAnimationIn() {
     Animated.parallel([
@@ -86,8 +89,8 @@ export default function AnimateQuotes({ isShakeTriggered, setIsShakeReady, hasIn
       opacity: fadeAnim, // Bind opacity to animated value
       transform: [{ scale: sizeAnim }], // Bind transform to animated value
       position: 'absolute',
-      left: '6%',
-      top: '45%',
+      left: leftPx,
+      top: topPx,
       height: '100%',
       width: '100%',
     }}>
