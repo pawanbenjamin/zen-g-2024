@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Animated, Text, View } from 'react-native';
-import { SVG_LOAD_DURATION, SVG_OUT_DURATION, SVG_IN_DURATION, SVG_IN_DELAY, leftPositionPercentDec } from './constants';
+import { SVG_LOAD_DURATION, SVG_OUT_DURATION, SVG_IN_DURATION, SVG_IN_DELAY, LEFT_POSITION_PERCENT } from './constants';
 import LogoSvg from './LogoSvg';
 
 export default function AnimateSvg({ isShakeTriggered, setIsShakeReady, hasInitialTransitionRun, width }) {
@@ -14,7 +14,7 @@ export default function AnimateSvg({ isShakeTriggered, setIsShakeReady, hasIniti
   });
   const sizeAnim = useRef(new Animated.Value(1)).current;
 
-  const leftPx = width * leftPositionPercentDec;
+  const leftPx = width * LEFT_POSITION_PERCENT;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {

@@ -32,5 +32,5 @@ export const quotes = [
 ];
 
 // Percentages to be multiplied against useWindowDimensions() height and width values for setting left and top attributes of absolute positioned Animate components
-export const leftPositionPercentDec = .06;
-export const topPositionPercentDec = .45;
+export const LEFT_POSITION_PERCENT = .06;
+export const TOP_POSITION_PERCENT = .45;

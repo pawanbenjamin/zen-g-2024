@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Animated, Text, View } from 'react-native';
-import { QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, quotes, topPositionPercentDec, leftPositionPercentDec } from './constants';
+import { QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, quotes, TOP_POSITION_PERCENT, LEFT_POSITION_PERCENT } from './constants';
 import { getRandomInt } from './utils';
 import Quotes from "./Quotes";
 
@@ -11,8 +11,8 @@ export default function AnimateQuotes({ isShakeTriggered, setIsShakeReady, hasIn
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const sizeAnim = useRef(new Animated.Value(0.5)).current;
 
-  const topPx = height * topPositionPercentDec;
-  const leftPx = width * leftPositionPercentDec;
+  const topPx = height * TOP_POSITION_PERCENT;
+  const leftPx = width * LEFT_POSITION_PERCENT;
 
   function quoteAnimationIn() {
     Animated.parallel([
