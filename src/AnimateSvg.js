@@ -1,9 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Animated, Text, View } from 'react-native';
-import { SVG_LOAD_DURATION, SVG_OUT_DURATION, SVG_IN_DURATION, SVG_IN_DELAY, LEFT_POSITION_PERCENT } from './constants';
+import { SVG_LOAD_DURATION, SVG_OUT_DURATION, SVG_IN_DURATION, SVG_IN_DELAY } from './constants';
 import LogoSvg from './LogoSvg';
 
-export default function AnimateSvg({ isShakeTriggered, setIsShakeReady, hasInitialTransitionRun, width }) {
+export default function AnimateSvg({ isShakeTriggered, setIsShakeReady, hasInitialTransitionRun }) {
   const [isLogoAnimationRunning, setIsLogoAnimationRunning] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -13,8 +13,6 @@ export default function AnimateSvg({ isShakeTriggered, setIsShakeReady, hasIniti
     outputRange: ['0deg', '1080deg'],
   });
   const sizeAnim = useRef(new Animated.Value(1)).current;
-
-  const leftPx = width * LEFT_POSITION_PERCENT;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -109,7 +107,6 @@ export default function AnimateSvg({ isShakeTriggered, setIsShakeReady, hasIniti
       opacity: fadeAnim, // Bind opacity to animated value
       transform: [{ rotate: spin }, { scale: sizeAnim }], // Bind transform to animated values
       position: 'absolute',
-      left: leftPx,
       height: '100%',
       width: '100%',
     }}>

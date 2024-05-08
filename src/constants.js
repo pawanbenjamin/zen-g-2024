@@ -31,6 +31,5 @@ export const quotes = [
   "we only want to believe the 'good' things about the people we admire, when what makes them heroes is how they negotiate their flaws.",
 ];
 
-// Percentages to be multiplied against useWindowDimensions() height and width values for setting left and top attributes of absolute positioned Animate components
-export const LEFT_POSITION_PERCENT = .06;
+// Percentages to be multiplied against useWindowDimensions() values for setting attributes relevant to absolute positioned Animate components
 export const TOP_POSITION_PERCENT = .45;
