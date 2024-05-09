@@ -107,7 +107,6 @@ export default function AnimateSvg({ isShakeTriggered, setIsShakeReady, hasIniti
       opacity: fadeAnim, // Bind opacity to animated value
       transform: [{ rotate: spin }, { scale: sizeAnim }], // Bind transform to animated values
       position: 'absolute',
-      left: '6%',
       height: '100%',
       width: '100%',
     }}>

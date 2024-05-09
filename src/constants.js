@@ -30,3 +30,6 @@ export const quotes = [
   "protect the people you love. call out bullshit at all costs. appreciate free thought in all its glory.",
   "we only want to believe the 'good' things about the people we admire, when what makes them heroes is how they negotiate their flaws.",
 ];
+
+// Percentages to be multiplied against useWindowDimensions() values for setting attributes relevant to absolute positioned Animate components
+export const TOP_POSITION_PERCENT = .45;
