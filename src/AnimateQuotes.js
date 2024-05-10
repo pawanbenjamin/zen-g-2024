@@ -89,9 +89,9 @@ export default function AnimateQuotes({ isShakeTriggered, setIsShakeReady, hasIn
       transform: [{ scale: sizeAnim }], // Bind transform to animated value
       position: 'absolute',
       // following line will hold Quotes component to center of window, eliminating the floating upward and downward motion upon fade in and out, respectively
-      // justifyContent: 'center',
-      // following line to be used instead of justifyContent attribute, allowing floating upward and downard effect up fade in and out, respectively
-      top: topPosition,
+      justifyContent: 'center',
+      // following line to be used instead of justifyContent attribute, allowing floating upward and downard effect upon fade in and out, respectively
+      // top: topPosition,
       height: '100%',
       width: '100%',
     }}>
