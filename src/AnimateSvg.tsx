@@ -3,11 +3,17 @@ import { Animated } from 'react-native';
 import { SVG_LOAD_DURATION, SVG_OUT_DURATION, SVG_IN_DURATION, SVG_IN_DELAY } from './constants';
 import LogoSvg from './LogoSvg';
 
+type AppPropsAnimateSvg = {
+  isShakeTriggered: boolean,
+  setIsShakeReady: React.Dispatch<React.SetStateAction<boolean>>,
+  hasInitialTransitionRun: boolean
+}
+
 export default function AnimateSvg({
   isShakeTriggered,
   setIsShakeReady,
   hasInitialTransitionRun
-}) {
+}: AppPropsAnimateSvg) {
   const [isLogoAnimationRunning, setIsLogoAnimationRunning] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;

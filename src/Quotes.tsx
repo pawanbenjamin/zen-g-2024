@@ -3,10 +3,15 @@ import { StyleSheet, Text } from 'react-native';
 import { quotes } from './constants';
 import { getRandomInt } from './utils';
 
+type AnimateQuotesProps = {
+  quoteIndex: number,
+  setQuoteIndex: React.Dispatch<React.SetStateAction<number>>
+};
+
 export default function Quotes({
   quoteIndex,
   setQuoteIndex
-}) {
+}: AnimateQuotesProps) {
   useEffect(() => {
     const newQuoteIndex = getRandomInt(quotes.length);
     setQuoteIndex(newQuoteIndex);

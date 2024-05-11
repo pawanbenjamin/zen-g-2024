@@ -4,13 +4,21 @@ import { QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, quotes } from
 import { getRandomInt } from './utils';
 import Quotes from "./Quotes";
 
+type AppPropsAnimateQuotes = {
+  isShakeTriggered: boolean,
+  setIsShakeReady: React.Dispatch<React.SetStateAction<boolean>>,
+  hasInitialTransitionRun: boolean,
+  setHasInitialTransitionRun: React.Dispatch<React.SetStateAction<boolean>>,
+  height: number
+}
+
 export default function AnimateQuotes({
   isShakeTriggered,
   setIsShakeReady,
   hasInitialTransitionRun,
   setHasInitialTransitionRun,
   height
-}) {
+}: AppPropsAnimateQuotes) {
   const [isQuoteAnimationRunning, setIsQuoteAnimationRunning] = useState(false);
   const [quoteIndex, setQuoteIndex] = useState(0);
 
