@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test:types": "tsc"
   },
   "dependencies": {
     "-": "^0.0.1",
@@ -25,8 +26,7 @@
     "typescript": "^5.4.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0",
-    "ts-migrate": "^0.1.35"
+    "@babel/core": "^7.20.0"
   },
   "private": true
 }

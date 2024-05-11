@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, SafeAreaView, View, useWindowDimensions } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import AnimateSvg from './AnimateSvg';
 import AnimateQuotes from './AnimateQuotes';
 import { useIsShake } from './useIsShake';
@@ -11,8 +11,18 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <AnimateSvg isShakeTriggered={isShakeTriggered} setIsShakeReady={setIsShakeReady} hasInitialTransitionRun={hasInitialTransitionRun} />
-      <AnimateQuotes isShakeTriggered={isShakeTriggered} setIsShakeReady={setIsShakeReady} hasInitialTransitionRun={hasInitialTransitionRun} setHasInitialTransitionRun={setHasInitialTransitionRun} height={height} />
+      <AnimateSvg
+        isShakeTriggered={isShakeTriggered}
+        setIsShakeReady={setIsShakeReady}
+        hasInitialTransitionRun={hasInitialTransitionRun}
+      />
+      <AnimateQuotes
+        isShakeTriggered={isShakeTriggered}
+        setIsShakeReady={setIsShakeReady}
+        hasInitialTransitionRun={hasInitialTransitionRun}
+        setHasInitialTransitionRun={setHasInitialTransitionRun}
+        height={height}
+      />
     </View>
   )
 };

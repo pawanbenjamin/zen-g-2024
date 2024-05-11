@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Accelerometer } from 'expo-sensors';
+import { Subscription } from 'expo-sensors/build/Pedometer';
+
+type Poll = number | null;
+type IsShakeProps = { x: number };
 
 export function useIsShake() {
-  const [{ x }, setData] = useState({
-    x: 0,
-  });
-  const [subscription, setSubscription] = useState(null);
+  const [_, setData] = useState<IsShakeProps>();
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [isShakeTriggered, setIsShakeTriggered] = useState(false);
   const [isShakeReady, setIsShakeReady] = useState(false);
 
-  let polls = [null, null];
+  let polls: Poll[] = [null, null];
   let diffs = [];
 
-  function isShake({ x: newX }) {
+  function isShake({ x: newX }: IsShakeProps) {
     if (diffs.length === 2) {
       setIsShakeTriggered(true);
       setIsShakeReady(false);
@@ -25,12 +27,16 @@ export function useIsShake() {
 
     if (newX < 0) polls[0] = newX;
     if (newX >= 0) polls[1] = newX;
-
+    // i very much dislike this below... bad... make it stop...
     let change;
-    if (polls[0] !== null && polls[1] !== null) {
-      change = Math.abs(polls[1] - polls[0]);
+    if (polls && polls[0] !== null && polls[1] !== null) {
+      const poll1 = polls[0];
+      const poll2 = polls[1];
+      if (poll1 && poll2) {
+        change = Math.abs(poll2 - poll1);
+      }
     }
-    if (change > 1.5) {
+    if (change !== undefined && change > 1.5) {
       diffs.push(change);
       polls = [null, null];
     }
