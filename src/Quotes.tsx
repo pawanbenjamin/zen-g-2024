@@ -1,9 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, Text } from 'react-native';
 import { quotes } from './constants';
 import { getRandomInt } from './utils';
 
-export default function Quotes({ quoteIndex, setQuoteIndex }) {
+type AnimateQuotesProps = {
+  quoteIndex: number,
+  setQuoteIndex: React.Dispatch<React.SetStateAction<number>>
+};
+
+export default function Quotes({
+  quoteIndex,
+  setQuoteIndex
+}: AnimateQuotesProps) {
   useEffect(() => {
     const newQuoteIndex = getRandomInt(quotes.length);
     setQuoteIndex(newQuoteIndex);

@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Accelerometer } from 'expo-sensors';
+import { Subscription } from 'expo-sensors/build/Pedometer';
+
+type Poll = number | null;
+type IsShakeProps = { x: number };
 
 export function useIsShake() {
-  const [{ x }, setData] = useState({
-    x: 0,
-  });
-  const [subscription, setSubscription] = useState(null);
+  const [_, setData] = useState<IsShakeProps>();
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [isShakeTriggered, setIsShakeTriggered] = useState(false);
   const [isShakeReady, setIsShakeReady] = useState(false);
 
-  let polls = [null, null];
+  let polls: Poll[] = [null, null];
   let diffs = [];
 
-  function isShake({ x: newX }) {
+  function isShake({ x: newX }: IsShakeProps) {
     if (diffs.length === 2) {
       setIsShakeTriggered(true);
       setIsShakeReady(false);
@@ -27,10 +29,10 @@ export function useIsShake() {
     if (newX >= 0) polls[1] = newX;
 
     let change;
-    if (polls[0] !== null && polls[1] !== null) {
+    if (polls[0] && (polls[1] || polls[1] === 0)) {
       change = Math.abs(polls[1] - polls[0]);
     }
-    if (change > 1.5) {
+    if (change && change > 1.5) {
       diffs.push(change);
       polls = [null, null];
     }

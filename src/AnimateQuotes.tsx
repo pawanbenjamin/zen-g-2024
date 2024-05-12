@@ -1,17 +1,29 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { Animated, Text, View } from 'react-native';
-import { QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, quotes, TOP_POSITION_PERCENT } from './constants';
+import React, { useRef, useState } from 'react';
+import { Animated } from 'react-native';
+import { QUOTES_IN_DURATION, QUOTES_IN_DELAY, QUOTES_OUT_DURATION, quotes } from './constants';
 import { getRandomInt } from './utils';
 import Quotes from "./Quotes";
 
-export default function AnimateQuotes({ isShakeTriggered, setIsShakeReady, hasInitialTransitionRun, setHasInitialTransitionRun, height }) {
+type AppPropsAnimateQuotes = {
+  isShakeTriggered: boolean,
+  setIsShakeReady: React.Dispatch<React.SetStateAction<boolean>>,
+  hasInitialTransitionRun: boolean,
+  setHasInitialTransitionRun: React.Dispatch<React.SetStateAction<boolean>>,
+  height: number
+}
+
+export default function AnimateQuotes({
+  isShakeTriggered,
+  setIsShakeReady,
+  hasInitialTransitionRun,
+  setHasInitialTransitionRun,
+  height
+}: AppPropsAnimateQuotes) {
   const [isQuoteAnimationRunning, setIsQuoteAnimationRunning] = useState(false);
   const [quoteIndex, setQuoteIndex] = useState(0);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const sizeAnim = useRef(new Animated.Value(0.5)).current;
-
-  const topPosition = height * TOP_POSITION_PERCENT;
 
   function quoteAnimationIn() {
     Animated.parallel([
@@ -90,8 +102,6 @@ export default function AnimateQuotes({ isShakeTriggered, setIsShakeReady, hasIn
       position: 'absolute',
       // following line will hold Quotes component to center of window, eliminating the floating upward and downward motion upon fade in and out, respectively
       justifyContent: 'center',
-      // following line to be used instead of justifyContent attribute, allowing floating upward and downard effect upon fade in and out, respectively
-      // top: topPosition,
       height: '100%',
       width: '100%',
     }}>
