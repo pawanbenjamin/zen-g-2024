@@ -5,15 +5,15 @@ import { openSettings } from 'expo-linking';
 
 type Poll = number | null;
 type IsShakeProps = { x: number };
-type IsAccelerometerAvailable = 'unckecked' | boolean;
+type AccelerometerStatus = 'uninitialized' | 'available' | 'not_available';
 
 export function useIsShake() {
   const [_, setData] = useState<IsShakeProps>();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [isShakeTriggered, setIsShakeTriggered] = useState(false);
   const [isShakeReady, setIsShakeReady] = useState(false);
-  const [isAccelerometerAvailable, setIsAccelerometerAvailable] = useState<IsAccelerometerAvailable>('unckecked');
-  const [isAccelerometerAvailPending, setIsAccelerometerAvailPending] = useState(false);
+  const [accelerometerStatus, setAccelerometerStatus] = useState<AccelerometerStatus>('uninitialized');
+  const [isAccelerometerStatusPending, setIsAccelerometerStatusPending] = useState(false);
 
   let polls: Poll[] = [null, null];
   let diffs = [];
@@ -56,40 +56,52 @@ export function useIsShake() {
   };
 
   const checkAccelerometerAvailablity = async () => {
-    const availability = await isAvailableAsync();
-    setIsAccelerometerAvailable(() => {
-      setIsAccelerometerAvailPending(false);
-      return availability;
-    });
+    try {
+      const availability = await isAvailableAsync();
+      setAccelerometerStatus(() => {
+        setIsAccelerometerStatusPending(false);
+        return availability ? 'available' : 'not_available';
+      });
+    } catch (err) {
+      // TODO: send this error to a log service | popup alert or tray
+      console.log(err);
+      setIsAccelerometerStatusPending(false);
+    }
   };
 
   const getAccelerometerPermission = async () => {
-    const permissionResponse = await requestPermissionsAsync();
-    if (permissionResponse.granted) {
-      setIsAccelerometerAvailable(() => {
-        setIsAccelerometerAvailPending(false);
-        return permissionResponse.granted;
-      });
-      // following else if block for when permissionResponse.canAskAgain === false in order to direct end user to Settings app in order to enable permission to access Accelerometer
-    } else if (!permissionResponse.canAskAgain) openSettings();
+    try {
+      const permissionResponse = await requestPermissionsAsync();
+      if (permissionResponse.granted) {
+        setAccelerometerStatus(() => {
+          setIsAccelerometerStatusPending(false);
+          return 'available';
+        });
+        // following else if block for when permissionResponse.canAskAgain === false in order to direct end user to Settings app in order to enable permission to access Accelerometer
+      } else if (!permissionResponse.canAskAgain) openSettings();
+    } catch (err) {
+      // TODO: send this error to a log service | popup alert or tray
+      console.log(err);
+      setIsAccelerometerStatusPending(false);
+    }
   };
 
   useEffect(() => {
-    if (isAccelerometerAvailable === 'unckecked' && !isAccelerometerAvailPending) {
-      setIsAccelerometerAvailPending(true);
+    if (accelerometerStatus === 'uninitialized' && !isAccelerometerStatusPending) {
+      setIsAccelerometerStatusPending(true);
       checkAccelerometerAvailablity();
     };
-    if (!isAccelerometerAvailable && !isAccelerometerAvailPending) {
-      setIsAccelerometerAvailPending(true);
+    if (!accelerometerStatus && !isAccelerometerStatusPending) {
+      setIsAccelerometerStatusPending(true);
       getAccelerometerPermission();
     };
     // invocation of _subscribe when accelerometer is available and isShakeReady === true
-    if (isAccelerometerAvailable && isShakeReady) {
+    if (accelerometerStatus && isShakeReady) {
       _subscribe();
       // isShake Accelerometer listener is removed when !isShakeReady
-    } else if (isAccelerometerAvailable && !isShakeReady) _unsubscribe();
+    } else if (accelerometerStatus && !isShakeReady) _unsubscribe();
     return () => _unsubscribe();
-  }, [isShakeReady, isAccelerometerAvailable]);
+  }, [isShakeReady, accelerometerStatus]);
 
   return { isShakeTriggered, setIsShakeReady };
 };
