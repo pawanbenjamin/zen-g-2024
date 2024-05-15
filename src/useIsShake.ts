@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Accelerometer } from 'expo-sensors';
-import { Subscription } from 'expo-sensors/build/Pedometer';
+import { Subscription, isAvailableAsync, requestPermissionsAsync } from 'expo-sensors/build/Pedometer';
+import * as Linking from 'expo-linking';
 
 type Poll = number | null;
 type IsShakeProps = { x: number };
@@ -10,6 +11,8 @@ export function useIsShake() {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [isShakeTriggered, setIsShakeTriggered] = useState(false);
   const [isShakeReady, setIsShakeReady] = useState(false);
+  const [isAccelerometerAvail, setIsAccelerometerAvail] = useState<boolean | null>(null);
+  const [isAccelerometerAvailPending, setIsAccelerometerAvailPending] = useState(false);
 
   let polls: Poll[] = [null, null];
   let diffs = [];
@@ -51,14 +54,41 @@ export function useIsShake() {
     setSubscription(null);
   };
 
+  const checkAccelerometerAvail = async () => {
+    const availability = await isAvailableAsync();
+    setIsAccelerometerAvail(() => {
+      setIsAccelerometerAvailPending(false);
+      return availability;
+    });
+  };
+
+  const getAccelerometerPermiss = async () => {
+    const permissionResponse = await requestPermissionsAsync();
+    if (permissionResponse.granted) setIsAccelerometerAvail(() => {
+      setIsAccelerometerAvailPending(false);
+      return permissionResponse.granted;
+    }); // following else if block for when permissionResponse.canAskAgain === false in order to direct end user to Settings app in order to enable permission to access Accelerometer
+    else if (!permissionResponse.canAskAgain) {
+      Linking.openSettings();
+    };
+  };
+
   useEffect(() => {
+    if (isAccelerometerAvail === null && !isAccelerometerAvailPending) {
+      setIsAccelerometerAvailPending(true);
+      checkAccelerometerAvail();
+    };
+    if (isAccelerometerAvail === false && !isAccelerometerAvailPending) {
+      setIsAccelerometerAvailPending(true);
+      getAccelerometerPermiss();
+    };
     // invocation of _subscribe when isToggleReady === true
-    if (isShakeReady) {
+    if (isAccelerometerAvail && isShakeReady) {
       _subscribe();
       // isShake Accelerometer listener is removed when !isToggleReady
-    } else _unsubscribe();
+    } else if (isAccelerometerAvail && !isShakeReady) _unsubscribe();
     return () => _unsubscribe();
-  }, [isShakeReady]);
+  }, [isShakeReady, isAccelerometerAvail]);
 
   return { isShakeTriggered, setIsShakeReady };
 };
