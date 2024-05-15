@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Accelerometer } from 'expo-sensors';
 import { Subscription, isAvailableAsync, requestPermissionsAsync } from 'expo-sensors/build/Pedometer';
-import * as Linking from 'expo-linking';
+import { openSettings } from 'expo-linking';
 
 type Poll = number | null;
 type IsShakeProps = { x: number };
+type IsAccelerometerAvailable = 'unckecked' | boolean;
 
 export function useIsShake() {
   const [_, setData] = useState<IsShakeProps>();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [isShakeTriggered, setIsShakeTriggered] = useState(false);
   const [isShakeReady, setIsShakeReady] = useState(false);
-  const [isAccelerometerAvail, setIsAccelerometerAvail] = useState<boolean | null>(null);
+  const [isAccelerometerAvailable, setIsAccelerometerAvailable] = useState<IsAccelerometerAvailable>('unckecked');
   const [isAccelerometerAvailPending, setIsAccelerometerAvailPending] = useState(false);
 
   let polls: Poll[] = [null, null];
@@ -54,41 +55,41 @@ export function useIsShake() {
     setSubscription(null);
   };
 
-  const checkAccelerometerAvail = async () => {
+  const checkAccelerometerAvailablity = async () => {
     const availability = await isAvailableAsync();
-    setIsAccelerometerAvail(() => {
+    setIsAccelerometerAvailable(() => {
       setIsAccelerometerAvailPending(false);
       return availability;
     });
   };
 
-  const getAccelerometerPermiss = async () => {
+  const getAccelerometerPermission = async () => {
     const permissionResponse = await requestPermissionsAsync();
-    if (permissionResponse.granted) setIsAccelerometerAvail(() => {
-      setIsAccelerometerAvailPending(false);
-      return permissionResponse.granted;
-    }); // following else if block for when permissionResponse.canAskAgain === false in order to direct end user to Settings app in order to enable permission to access Accelerometer
-    else if (!permissionResponse.canAskAgain) {
-      Linking.openSettings();
-    };
+    if (permissionResponse.granted) {
+      setIsAccelerometerAvailable(() => {
+        setIsAccelerometerAvailPending(false);
+        return permissionResponse.granted;
+      });
+      // following else if block for when permissionResponse.canAskAgain === false in order to direct end user to Settings app in order to enable permission to access Accelerometer
+    } else if (!permissionResponse.canAskAgain) openSettings();
   };
 
   useEffect(() => {
-    if (isAccelerometerAvail === null && !isAccelerometerAvailPending) {
+    if (isAccelerometerAvailable === 'unckecked' && !isAccelerometerAvailPending) {
       setIsAccelerometerAvailPending(true);
-      checkAccelerometerAvail();
+      checkAccelerometerAvailablity();
     };
-    if (isAccelerometerAvail === false && !isAccelerometerAvailPending) {
+    if (!isAccelerometerAvailable && !isAccelerometerAvailPending) {
       setIsAccelerometerAvailPending(true);
-      getAccelerometerPermiss();
+      getAccelerometerPermission();
     };
-    // invocation of _subscribe when isToggleReady === true
-    if (isAccelerometerAvail && isShakeReady) {
+    // invocation of _subscribe when accelerometer is available and isShakeReady === true
+    if (isAccelerometerAvailable && isShakeReady) {
       _subscribe();
-      // isShake Accelerometer listener is removed when !isToggleReady
-    } else if (isAccelerometerAvail && !isShakeReady) _unsubscribe();
+      // isShake Accelerometer listener is removed when !isShakeReady
+    } else if (isAccelerometerAvailable && !isShakeReady) _unsubscribe();
     return () => _unsubscribe();
-  }, [isShakeReady, isAccelerometerAvail]);
+  }, [isShakeReady, isAccelerometerAvailable]);
 
   return { isShakeTriggered, setIsShakeReady };
 };
