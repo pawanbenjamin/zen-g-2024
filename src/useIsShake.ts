@@ -91,15 +91,15 @@ export function useIsShake() {
       setIsAccelerometerStatusPending(true);
       checkAccelerometerAvailablity();
     };
-    if (!accelerometerStatus && !isAccelerometerStatusPending) {
+    if (accelerometerStatus === 'not_available' && !isAccelerometerStatusPending) {
       setIsAccelerometerStatusPending(true);
       getAccelerometerPermission();
     };
     // invocation of _subscribe when accelerometer is available and isShakeReady === true
-    if (accelerometerStatus && isShakeReady) {
+    if (accelerometerStatus === 'available' && isShakeReady) {
       _subscribe();
       // isShake Accelerometer listener is removed when !isShakeReady
-    } else if (accelerometerStatus && !isShakeReady) _unsubscribe();
+    } else if (accelerometerStatus === 'available' && !isShakeReady) _unsubscribe();
     return () => _unsubscribe();
   }, [isShakeReady, accelerometerStatus]);
 
