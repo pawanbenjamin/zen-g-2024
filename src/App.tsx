@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, useWindowDimensions } from 'react-native';
-import AnimateSvg from './AnimateSvg';
-import AnimateQuotes from './AnimateQuotes';
-import { useIsShake } from './useIsShake';
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import AnimateSvg from "./AnimateSvg";
+import AnimateQuotes from "./AnimateQuotes";
+import { useIsShake } from "./useIsShake";
+import { registerRootComponent } from "expo";
 
-export default function App() {
+function App() {
   const [hasInitialTransitionRun, setHasInitialTransitionRun] = useState(false);
   const { isShakeTriggered, setIsShakeReady } = useIsShake();
-  const { height } = useWindowDimensions();
 
   return (
     <View style={styles.container}>
@@ -21,19 +21,20 @@ export default function App() {
         setIsShakeReady={setIsShakeReady}
         hasInitialTransitionRun={hasInitialTransitionRun}
         setHasInitialTransitionRun={setHasInitialTransitionRun}
-        height={height}
       />
     </View>
-  )
-};
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 20,
-    backgroundColor: 'black',
-    position: 'relative',
+    backgroundColor: "black",
+    position: "relative",
   },
 });
+
+export default registerRootComponent(App);

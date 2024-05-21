@@ -1,19 +1,25 @@
-import { useState, useEffect } from 'react';
-import { Accelerometer } from 'expo-sensors';
-import { Subscription, isAvailableAsync, requestPermissionsAsync } from 'expo-sensors/build/Pedometer';
-import { openSettings } from 'expo-linking';
+import { useState, useEffect } from "react";
+import { Accelerometer } from "expo-sensors";
+import {
+  Subscription,
+  isAvailableAsync,
+  requestPermissionsAsync,
+} from "expo-sensors/build/Pedometer";
+import { openSettings } from "expo-linking";
 
 type Poll = number | null;
 type IsShakeProps = { x: number };
-type AccelerometerStatus = 'uninitialized' | 'available' | 'not_available';
+type AccelerometerStatus = "uninitialized" | "available" | "not_available";
 
 export function useIsShake() {
   const [_, setData] = useState<IsShakeProps>();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [isShakeTriggered, setIsShakeTriggered] = useState(false);
   const [isShakeReady, setIsShakeReady] = useState(false);
-  const [accelerometerStatus, setAccelerometerStatus] = useState<AccelerometerStatus>('uninitialized');
-  const [isAccelerometerStatusPending, setIsAccelerometerStatusPending] = useState(false);
+  const [accelerometerStatus, setAccelerometerStatus] =
+    useState<AccelerometerStatus>("uninitialized");
+  const [isAccelerometerStatusPending, setIsAccelerometerStatusPending] =
+    useState(false);
 
   let polls: Poll[] = [null, null];
   let diffs = [];
@@ -42,7 +48,7 @@ export function useIsShake() {
     }
 
     setData({ x: newX });
-  };
+  }
 
   Accelerometer.setUpdateInterval(75);
 
@@ -60,7 +66,7 @@ export function useIsShake() {
       const availability = await isAvailableAsync();
       setAccelerometerStatus(() => {
         setIsAccelerometerStatusPending(false);
-        return availability ? 'available' : 'not_available';
+        return availability ? "available" : "not_available";
       });
     } catch (err) {
       // TODO: send this error to a log service | popup alert or tray
@@ -75,7 +81,7 @@ export function useIsShake() {
       if (permissionResponse.granted) {
         setAccelerometerStatus(() => {
           setIsAccelerometerStatusPending(false);
-          return 'available';
+          return "available";
         });
         // following else if block for when permissionResponse.canAskAgain === false in order to direct end user to Settings app in order to enable permission to access Accelerometer
       } else if (!permissionResponse.canAskAgain) openSettings();
@@ -87,21 +93,21 @@ export function useIsShake() {
   };
 
   useEffect(() => {
-    if (accelerometerStatus === 'uninitialized' && !isAccelerometerStatusPending) {
+    if (accelerometerStatus === "uninitialized" && !isAccelerometerStatusPending) {
       setIsAccelerometerStatusPending(true);
       checkAccelerometerAvailablity();
-    };
-    if (accelerometerStatus === 'not_available' && !isAccelerometerStatusPending) {
+    }
+    if (accelerometerStatus === "not_available" && !isAccelerometerStatusPending) {
       setIsAccelerometerStatusPending(true);
       getAccelerometerPermission();
-    };
+    }
     // invocation of _subscribe when accelerometer is available and isShakeReady === true
-    if (accelerometerStatus === 'available' && isShakeReady) {
+    if (accelerometerStatus === "available" && isShakeReady) {
       _subscribe();
       // isShake Accelerometer listener is removed when !isShakeReady
-    } else if (accelerometerStatus === 'available' && !isShakeReady) _unsubscribe();
+    } else if (accelerometerStatus === "available" && !isShakeReady) _unsubscribe();
     return () => _unsubscribe();
   }, [isShakeReady, accelerometerStatus]);
 
   return { isShakeTriggered, setIsShakeReady };
-};
+}

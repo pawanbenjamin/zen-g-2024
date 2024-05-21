@@ -1,18 +1,23 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { Animated } from 'react-native';
-import { SVG_LOAD_DURATION, SVG_OUT_DURATION, SVG_IN_DURATION, SVG_IN_DELAY } from './constants';
-import LogoSvg from './LogoSvg';
+import React, { useRef, useEffect, useState } from "react";
+import { Animated } from "react-native";
+import {
+  SVG_LOAD_DURATION,
+  SVG_OUT_DURATION,
+  SVG_IN_DURATION,
+  SVG_IN_DELAY,
+} from "./constants";
+import LogoSvg from "./LogoSvg";
 
 type AppPropsAnimateSvg = {
-  isShakeTriggered: boolean,
-  setIsShakeReady: React.Dispatch<React.SetStateAction<boolean>>,
-  hasInitialTransitionRun: boolean
-}
+  isShakeTriggered: boolean;
+  setIsShakeReady: React.Dispatch<React.SetStateAction<boolean>>;
+  hasInitialTransitionRun: boolean;
+};
 
 export default function AnimateSvg({
   isShakeTriggered,
   setIsShakeReady,
-  hasInitialTransitionRun
+  hasInitialTransitionRun,
 }: AppPropsAnimateSvg) {
   const [isLogoAnimationRunning, setIsLogoAnimationRunning] = useState(false);
 
@@ -20,7 +25,7 @@ export default function AnimateSvg({
   const spinValue = useRef(new Animated.Value(0)).current;
   const spin = spinValue.interpolate({
     inputRange: [0, 1],
-    outputRange: ['0deg', '1080deg'],
+    outputRange: ["0deg", "1080deg"],
   });
   const sizeAnim = useRef(new Animated.Value(1)).current;
 
@@ -54,7 +59,7 @@ export default function AnimateSvg({
     ]).start(() => {
       setIsLogoAnimationRunning(false);
     });
-  };
+  }
 
   function logoAnimationIn_CallbackOut() {
     Animated.parallel([
@@ -80,7 +85,7 @@ export default function AnimateSvg({
       logoAnimationBackOut();
       setIsLogoAnimationRunning(false);
     });
-  };
+  }
 
   function logoAnimationBackOut() {
     Animated.parallel([
@@ -100,7 +105,7 @@ export default function AnimateSvg({
         useNativeDriver: true,
       }),
     ]).start();
-  };
+  }
 
   // LogoSvg fades out first time
   if (isShakeTriggered && !hasInitialTransitionRun && !isLogoAnimationRunning) {
@@ -113,14 +118,16 @@ export default function AnimateSvg({
   }
 
   return (
-    <Animated.View style={{
-      opacity: fadeAnim, // Bind opacity to animated value
-      transform: [{ rotate: spin }, { scale: sizeAnim }], // Bind transform to animated values
-      position: 'absolute',
-      height: '100%',
-      width: '100%',
-    }}>
+    <Animated.View
+      style={{
+        opacity: fadeAnim, // Bind opacity to animated value
+        transform: [{ rotate: spin }, { scale: sizeAnim }], // Bind transform to animated values
+        position: "absolute",
+        height: "100%",
+        width: "100%",
+      }}
+    >
       <LogoSvg />
     </Animated.View>
-  )
-};
+  );
+}
