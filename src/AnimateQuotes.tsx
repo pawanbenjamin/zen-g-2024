@@ -34,18 +34,18 @@ export default function AnimateQuotes({
         toValue: 1,
         duration: QUOTES_IN_DURATION,
         delay: QUOTES_IN_DELAY,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
       Animated.timing(sizeAnim, {
         toValue: 1,
         duration: QUOTES_IN_DURATION,
         delay: QUOTES_IN_DELAY,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
     ]).start(() => {
       setIsQuoteAnimationRunning(false);
-      setIsShakeReady(true);
-      setHasInitialTransitionRun(true);
+      setIsShakeReady(false);
+      setHasInitialTransitionRun(false);
     });
   }
 
@@ -54,12 +54,12 @@ export default function AnimateQuotes({
       Animated.timing(fadeAnim, {
         toValue: 0,
         duration: QUOTES_OUT_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
       Animated.timing(sizeAnim, {
         toValue: 0.5,
         duration: QUOTES_OUT_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
     ]).start(() => {
       const newQuoteIndex = getRandomInt(quotes.length);
@@ -74,27 +74,27 @@ export default function AnimateQuotes({
         toValue: 1,
         duration: QUOTES_IN_DURATION,
         delay: QUOTES_IN_DELAY,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
       Animated.timing(sizeAnim, {
         toValue: 1,
         duration: QUOTES_IN_DURATION,
         delay: QUOTES_IN_DELAY,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
     ]).start(() => {
       setIsQuoteAnimationRunning(false);
-      setIsShakeReady(true);
+      setIsShakeReady(false);
     });
   }
 
   // lands on Quotes after LogoSvg fades out first time
   if (isShakeTriggered && !hasInitialTransitionRun && !isQuoteAnimationRunning) {
-    setIsQuoteAnimationRunning(true);
+    setIsQuoteAnimationRunning(false);
     quoteAnimationIn();
     // Quotes fade out, delay for LogoSvg fade in/fade, then Quotes fade back in
   } else if (isShakeTriggered && hasInitialTransitionRun && !isQuoteAnimationRunning) {
-    setIsQuoteAnimationRunning(true);
+    setIsQuoteAnimationRunning(false);
     quoteAnimationOut_CallbackIn();
   }
 
