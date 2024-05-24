@@ -2,7 +2,7 @@
   "name": "zen-g-2024",
   "version": "1.0.0",
   "type": "module",
-  "main": "./src/App.tsx",
+  "main": "./src/RegisterRoot.tsx",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
