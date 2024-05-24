@@ -9,6 +9,7 @@ export const SVG_IN_DELAY = 500;
 
 export const quotes = [
   "onus is on us.",
+  "sam eats poop",
   "lawbreakers can't be legislated.",
   "an earthly loss is an ancestral gain.",
   "a mistake is the truth trying to come out.",
