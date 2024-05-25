@@ -3,9 +3,8 @@ import { StyleSheet, View } from "react-native";
 import AnimateSvg from "./AnimateSvg";
 import AnimateQuotes from "./AnimateQuotes";
 import { useIsShake } from "./useIsShake";
-import { registerRootComponent } from "expo";
 
-function App() {
+export default function App() {
   const [hasInitialTransitionRun, setHasInitialTransitionRun] = useState(false);
   const { isShakeTriggered, setIsShakeReady } = useIsShake();
 
@@ -36,5 +35,3 @@ const styles = StyleSheet.create({
     position: "relative",
   },
 });
-
-export default registerRootComponent(App);

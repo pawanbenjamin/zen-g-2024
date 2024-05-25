@@ -3,7 +3,7 @@
     "name": "zen-g-2024",
     "slug": "zen-g-2024",
     "version": "1.0.0",
-    "entryPoint": "./src/App.tsx",
+    "entryPoint": "./src/RegisterRoot.tsx",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
