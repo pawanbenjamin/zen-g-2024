@@ -20,8 +20,9 @@ const config = {
     "**/*.{ts,tsx}",
     "!**/coverage/**",
     "!**/node_modules/**",
-    "!**/babel.config.js",
+    "!**/babel.config.cjs",
     "!**/jest.setup.js",
+    "!**/eslint.config.js",
   ],
   moduleFileExtensions: [...defaults.moduleFileExtensions, "tsx", "ts", "js"],
   transformIgnorePatterns: [
