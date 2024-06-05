@@ -8,6 +8,7 @@ const xml = `
 export default function LogoSvg() {
   return (
     <SvgCss
+      testID="LogoSvg"
       xml={xml}
       width="100%"
       height="100%"

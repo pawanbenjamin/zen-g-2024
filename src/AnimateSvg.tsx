@@ -119,6 +119,7 @@ export default function AnimateSvg({
 
   return (
     <Animated.View
+      testID="AnimateSvg"
       style={{
         opacity: fadeAnim, // Bind opacity to animated value
         transform: [{ rotate: spin }, { scale: sizeAnim }], // Bind transform to animated values

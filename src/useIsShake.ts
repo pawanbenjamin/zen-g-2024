@@ -12,14 +12,14 @@ type IsShakeProps = { x: number };
 type AccelerometerStatus = "uninitialized" | "available" | "not_available";
 
 export function useIsShake() {
-  const [_, setData] = useState<IsShakeProps>();
-  const [subscription, setSubscription] = useState<Subscription | null>(null);
-  const [isShakeTriggered, setIsShakeTriggered] = useState(false);
-  const [isShakeReady, setIsShakeReady] = useState(false);
   const [accelerometerStatus, setAccelerometerStatus] =
     useState<AccelerometerStatus>("uninitialized");
   const [isAccelerometerStatusPending, setIsAccelerometerStatusPending] =
     useState(false);
+  const [isShakeReady, setIsShakeReady] = useState(false);
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [_, setData] = useState<IsShakeProps>();
+  const [isShakeTriggered, setIsShakeTriggered] = useState(false);
 
   let polls: Poll[] = [null, null];
   let diffs = [];
