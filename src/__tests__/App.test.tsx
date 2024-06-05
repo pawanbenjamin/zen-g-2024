@@ -16,6 +16,4 @@ describe("App component", () => {
     expect(getByTestId("AnimateSvg")).toBeTruthy();
     expect(getByTestId("AnimateQuotes")).toBeTruthy();
   });
-
-  it.todo("checks if a Subscription is assigned to subscription state");
 });
