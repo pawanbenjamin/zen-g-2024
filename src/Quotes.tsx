@@ -14,7 +14,14 @@ export default function Quotes({ quoteIndex, setQuoteIndex }: AnimateQuotesProps
     setQuoteIndex(newQuoteIndex);
   }, []);
 
-  return <Text style={styles.text}>{quotes[quoteIndex]}</Text>;
+  return (
+    <Text
+      testID="Quotes"
+      style={styles.text}
+    >
+      {quotes[quoteIndex]}
+    </Text>
+  );
 }
 
 const styles = StyleSheet.create({

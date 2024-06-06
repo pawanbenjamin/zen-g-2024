@@ -100,6 +100,7 @@ export default function AnimateQuotes({
 
   return (
     <Animated.View
+      testID="AnimateQuotes"
       style={{
         opacity: fadeAnim, // Bind opacity to animated value
         transform: [{ scale: sizeAnim }], // Bind transform to animated value
